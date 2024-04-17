@@ -1,12 +1,9 @@
 FROM node:20-alpine
 
-WORKDIR /usr/src/express-app
+WORKDIR /usr/src/memarket-app
 
 COPY package*.json ./
 RUN npm ci
-    
-COPY prisma/schema.prisma ./prisma/
-RUN npx prisma generate
 
 COPY . .
 

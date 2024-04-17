@@ -1,16 +1,12 @@
-import express from 'express'
-import morgan from 'morgan'
-import db from './dbs'
+import app from './app'
+import config from './config'
 
-const app = express()
-app.use(morgan('dev'))
+const PORT = config.app.port
 
-app.get('/', async (req, res) => {
-  const posts = await db.post.findMany()
-  res.send(`posts: ${JSON.stringify(posts)}`)
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running at http://localhost:${PORT}`)
 })
 
-const port = Number(process.env.PORT ?? 8080)
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server running at http://localhost:${port}`)
+process.on('SIGINT', () => {
+  server.close(() => console.log('Exit Server Express'))
 })

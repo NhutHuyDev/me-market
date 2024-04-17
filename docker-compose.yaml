@@ -1,24 +1,29 @@
 version: '3.8'
 
 services:
-  mongo: 
-    image: mongo
+  mongo:
+    build: ./mongoDB
+    restart: always
     ports:
-      - 27017:27017  # enables connecting locally via psql
+      - 27017:27017
+    volumes:
+      - ecommerce_express_dev:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
 
   backend:
     build: .
-    depends_on:
-      - mongo
     ports:
       - 5000:5000
       - 9229:9229  # debugger port
     volumes:
-      - .:/usr/src/express-app 
-      - /usr/src/express-app/node_modules # not mapping or interact with local machine
+      - .:/usr/src/memarket-app 
+      - /usr/src/memarket-app/node_modules # not mapping or interact with local machine
     command: npm run start:docker # overriding 'CMD' command line of the docker file
     environment:
-      PORT: 5000
-      MONGO_CONNECTION_STR: mongodb+srv://localhost/ecommerce_express_dev
+      DEV_PORT: 5000
+      MONGO_CONNECTION_STR: mongodb://root:example@mongo:27017/ecommerce_express_dev?authSource=admin
 
-      
+volumes:
+  ecommerce_express_dev:
