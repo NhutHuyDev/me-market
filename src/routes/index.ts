@@ -3,7 +3,12 @@ import { NotFoundError } from '@src/core/error.responses'
 
 const router = express.Router()
 
-router.get('/v1/api/health-check', (_, res) => res.sendStatus(200))
+router.get('/v1/api/health-check', (_, res) => {
+  let a = 4
+  a += 1
+
+  return res.sendStatus(200)
+})
 
 /**
  * @description 404 handling

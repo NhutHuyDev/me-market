@@ -10,10 +10,7 @@ const mongoDBConnector = async (connectionStr: string) => {
   }
 
   try {
-    await mongoose.connect(connectionStr, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    } as ConnectOptions)
+    await mongoose.connect(connectionStr)
     console.log('::Mongo Database: connected to MongoDB successfully')
   } catch (error) {
     console.log('::Mongo Database: connection to MongoDB failed')

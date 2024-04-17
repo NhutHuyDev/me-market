@@ -18,7 +18,7 @@ services:
       - 5000:5000
       - 9229:9229  # debugger port
     volumes:
-      - .:/usr/src/memarket-app 
+      - .:/usr/src/memarket-app
       - /usr/src/memarket-app/node_modules # not mapping or interact with local machine
     command: npm run start:docker # overriding 'CMD' command line of the docker file
     environment:

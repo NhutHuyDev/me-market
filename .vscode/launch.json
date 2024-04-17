@@ -4,13 +4,13 @@
         {
             "type": "node",
             "request": "attach",
-            "name": "Express Setup (Docker)",
+            "name": "MeMarket (Docker)",
             "port": 9229,
             "restart": true,
-            "remoteRoot": "/usr/src/express-app",
+            "remoteRoot": "/usr/src/memarket-app",
             "sourceMaps": true,
             "skipFiles": [
-                "/usr/src/express-app/node_modules/**/*.js",
+                "/usr/src/memarket-app/node_modules/**/*.js",
                 "<node_internals>/**"
             ]
         }
