@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express'
 import UserRoutes from './user.routes'
+import AccessRoutes from './access.routes'
 
 import { NotFoundError } from '@src/core/error.responses'
 
@@ -9,7 +10,12 @@ router.get('/v1/api/health-check', (_, res) => {
   return res.sendStatus(200)
 })
 
+/**
+ * @description main feature routes
+ */
+
 router.use('/v1/api/users', UserRoutes)
+router.use('/v1/api/access', AccessRoutes)
 
 /**
  * @description 404 handling

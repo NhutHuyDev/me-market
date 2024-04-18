@@ -1,9 +1,14 @@
-import { ConflictError, InternalServerError } from '@src/core/error.responses'
+import { BadRequestError, ConflictError, InternalServerError } from '@src/core/error.responses'
 import RegisterOtpRepo from '@src/models/repositories/registerOtp.repo'
 import UserRepo from '@src/models/repositories/user.repo'
 import sendEmail from '@src/utils/mailer'
 import path from 'path'
 import fs from 'fs'
+import UserModel from '@src/models/user.model'
+import { TCreateUserSchema } from '@src/schema/user.request.schemas'
+import KeyStoreRepo from '@src/models/repositories/keyStore.repo'
+import CredentialModel from '@src/models/credential.model'
+import { SystemRoles } from '@src/models/role.model'
 
 class UserServices {
   static RequestVerifyOtp = async function (email: string) {
@@ -61,6 +66,72 @@ class UserServices {
     } catch (error) {
       console.log(error)
       throw new InternalServerError('Internal Server Error - Send Email Fail')
+    }
+  }
+
+  static VerifyUser = async function (email: string, candidateOtp: string) {
+    /**
+     * @description 1. kiểm tra có tồn tại yêu cầu xác thực cho email hiện tại hay không
+     */
+    const existingValidOtp = await RegisterOtpRepo.FindValidByEmail(email)
+    if (!existingValidOtp) {
+      throw new BadRequestError('email or otp is not valid')
+    }
+
+    /**
+     * @description 2. kiểm tra otp có hợp lệ hay không
+     */
+    if (await existingValidOtp.ValidateOtp(candidateOtp)) {
+      existingValidOtp.CurrentOtp = null
+      existingValidOtp.Verified = true
+
+      await existingValidOtp.save()
+
+      return {
+        email: email,
+        message: `verify email - ${email} successfully`
+      }
+    } else {
+      throw new BadRequestError("otp isn't valid")
+    }
+  }
+
+  static CreateUser = async function (input: TCreateUserSchema) {
+    /**
+     * @description 1. kiểm tra email đã được xác thực chưa
+     */
+    const isValidEmail = await RegisterOtpRepo.IsValidEmail(input.email)
+
+    if (!isValidEmail) throw new BadRequestError("email isn't verified")
+
+    /**
+     * @description 2. tạo thông tin ban đầu cho user
+     */
+    const newUser = await UserModel.create({
+      Email: input.email,
+      FirstName: input.firstName,
+      LastName: input.lastName,
+      Mobile: input.mobile,
+      Roles: [SystemRoles.Customer]
+    })
+
+    /**
+     * @description 3. tạo key store
+     */
+    await KeyStoreRepo.Create(String(newUser._id))
+
+    /**
+     * @description 4. tạo thông tin đăng nhập
+     */
+    await CredentialModel.create({
+      User: newUser._id,
+      CredLogin: input.email,
+      CredPassword: input.credPassword
+    })
+
+    return {
+      email: input.email,
+      messsage: 'create user successfull'
     }
   }
 }

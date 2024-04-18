@@ -7,10 +7,10 @@
             "name": "MeMarket (Docker)",
             "port": 9229,
             "restart": true,
-            "remoteRoot": "/usr/src/memarket-app",
+            "remoteRoot": "./",
             "sourceMaps": true,
             "skipFiles": [
-                "/usr/src/memarket-app/node_modules/**/*.js",
+                "./node_modules/**/*.js",
                 "<node_internals>/**"
             ]
         }

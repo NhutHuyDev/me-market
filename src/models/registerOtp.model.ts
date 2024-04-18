@@ -4,23 +4,29 @@ import argon2 from 'argon2'
 
 export interface IRegisterOtp {
   Email: string
-  CurrentOtp?: string
-  ExpiredAt?: Date
-  Verified?: boolean
+  CurrentOtp?: string | null
+  ExpiredAt?: Date | null
+  Verified: boolean
 }
 
 interface IRegisterOtpMethods {
   GenerateOtp(): string
+  ValidateOtp(CandidateOtp: string): Promise<string>
 }
 
-type RegisterOtpModel = Model<IRegisterOtp, object, IRegisterOtpMethods>
+type TRegisterOtpModel = Model<IRegisterOtp, object, IRegisterOtpMethods>
 
-const registerOtpSchema = new Schema<IRegisterOtp, RegisterOtpModel, IRegisterOtpMethods>({
+const registerOtpSchema = new Schema<IRegisterOtp, TRegisterOtpModel, IRegisterOtpMethods>({
   Email: { type: String, unique: true, required: true },
-  CurrentOtp: { type: String },
-  ExpiredAt: { type: Date },
-  Verified: { type: Boolean }
+  CurrentOtp: { type: String, default: null },
+  ExpiredAt: { type: Date, default: null },
+  Verified: { type: Boolean, default: false }
 })
+
+/**
+ * @description khai báo method
+ */
+
 registerOtpSchema.method('GenerateOtp', function GenerateOtp() {
   const expiredTime = Date.now() + 10 * 60 * 1000 // after 10 minutes
   const otpLength = 6
@@ -37,6 +43,13 @@ registerOtpSchema.method('GenerateOtp', function GenerateOtp() {
 
   return newOTP
 })
+
+registerOtpSchema.method('ValidateOtp', async function ValidateOtp(CandidateOtp: string) {
+  if (this.CurrentOtp) {
+    return await argon2.verify(this.CurrentOtp, CandidateOtp)
+  }
+})
+
 registerOtpSchema.pre('save', async function () {
   if (!this.CurrentOtp || !this.isModified('CurrentOtp')) {
     return
@@ -45,7 +58,7 @@ registerOtpSchema.pre('save', async function () {
   this.CurrentOtp = hashOtp
 })
 
-const RegisterOtpModel = model<IRegisterOtp, RegisterOtpModel>(
+const RegisterOtpModel = model<IRegisterOtp, TRegisterOtpModel>(
   'RegisterOtp',
   registerOtpSchema,
   'RegisterOtp'

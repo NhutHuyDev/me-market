@@ -18,7 +18,7 @@ services:
       - mongo
     ports:
       - 5000:5000
-      - 9229:9229  # debugger port
+      # - 9229:9229  # debugger port
     volumes:
       - ./src:/usr/src/memarket-app/src
       - /usr/src/memarket-app/node_modules # not mapping or interact with local machine
