@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { AnyZodObject, ZodError } from 'zod'
-import { BadRequestError } from '@src/core/error.responses'
+import { BadRequestResponse } from '@src/core/error.responses'
 
 const validateResource =
   (schema: AnyZodObject) => (req: Request, res: Response, next: NextFunction) => {
@@ -10,14 +10,14 @@ const validateResource =
         query: req.query,
         params: req.params
       })
-
       next()
     } catch (error: any) {
       if (error instanceof ZodError) {
         const errors = error.flatten()
         const errMsg = JSON.stringify(errors.fieldErrors)
-        const validataError = new BadRequestError(errMsg)
-        next(validataError)
+
+        const validataError = new BadRequestResponse(errMsg)
+        validataError.send(res)
       } else {
         next(error)
       }

@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 
-export function generateRSAKeyPair() {
+export function GenerateRSAKeyPair() {
   const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
     modulusLength: 2048,
     publicKeyEncoding: {
@@ -14,7 +14,7 @@ export function generateRSAKeyPair() {
   })
 
   return {
-    publicKey,
-    privateKey
+    PublicKey: publicKey,
+    PrivateKey: privateKey
   }
 }

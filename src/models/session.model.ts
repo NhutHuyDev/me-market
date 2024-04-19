@@ -2,13 +2,13 @@ import { model, Schema } from 'mongoose'
 
 export interface ISession {
   User: Schema.Types.ObjectId
-  RefreshToken: string
+  RefreshToken: string | null
   Available: boolean
 }
 
 const sessionSchema = new Schema<ISession>({
   User: { type: Schema.Types.ObjectId, ref: 'Users' },
-  RefreshToken: { type: String, required: true },
+  RefreshToken: { type: String, default: null },
   Available: { type: Boolean, default: true }
 })
 

@@ -1,4 +1,4 @@
-import { BadRequestError, ConflictError, InternalServerError } from '@src/core/error.responses'
+import { InternalServerError } from '@src/core/exceptions'
 import RegisterOtpRepo from '@src/models/repositories/registerOtp.repo'
 import UserRepo from '@src/models/repositories/user.repo'
 import sendEmail from '@src/utils/mailer'
@@ -9,6 +9,8 @@ import { TCreateUserSchema } from '@src/schema/user.request.schemas'
 import KeyStoreRepo from '@src/models/repositories/keyStore.repo'
 import CredentialModel from '@src/models/credential.model'
 import { SystemRoles } from '@src/models/role.model'
+import { BadRequestResponse, ConflictResponse } from '@src/core/error.responses'
+import { CreatedResponse, OkResponse } from '@src/core/success.responses'
 
 class UserServices {
   static RequestVerifyOtp = async function (email: string) {
@@ -18,7 +20,7 @@ class UserServices {
     const existingUser = await UserRepo.FindByEmail(email)
 
     if (existingUser && existingUser.Verified) {
-      throw new ConflictError('email is already in use. Please use another email!')
+      return new ConflictResponse('email is already in use. Please use another email!')
     }
 
     /**
@@ -57,15 +59,13 @@ class UserServices {
         html: html
       })
 
-      console.log(`Password reset email sent to ${email}`)
-
-      return {
+      return new OkResponse({
         email,
         message: `access your email - ${email} to get reset password code`
-      }
+      })
     } catch (error) {
       console.log(error)
-      throw new InternalServerError('Internal Server Error - Send Email Fail')
+      throw new InternalServerError()
     }
   }
 
@@ -75,7 +75,7 @@ class UserServices {
      */
     const existingValidOtp = await RegisterOtpRepo.FindValidByEmail(email)
     if (!existingValidOtp) {
-      throw new BadRequestError('email or otp is not valid')
+      return new BadRequestResponse('email or otp is not valid')
     }
 
     /**
@@ -87,12 +87,12 @@ class UserServices {
 
       await existingValidOtp.save()
 
-      return {
+      return new OkResponse({
         email: email,
         message: `verify email - ${email} successfully`
-      }
+      })
     } else {
-      throw new BadRequestError("otp isn't valid")
+      return new BadRequestResponse('otp is not valid')
     }
   }
 
@@ -102,7 +102,9 @@ class UserServices {
      */
     const isValidEmail = await RegisterOtpRepo.IsValidEmail(input.email)
 
-    if (!isValidEmail) throw new BadRequestError("email isn't verified")
+    if (!isValidEmail) {
+      return new BadRequestResponse('email is not verified')
+    }
 
     /**
      * @description 2. tạo thông tin ban đầu cho user
@@ -112,6 +114,7 @@ class UserServices {
       FirstName: input.firstName,
       LastName: input.lastName,
       Mobile: input.mobile,
+      Avatar: '/cloud/assets/img/default-customer-avatar.svg',
       Roles: [SystemRoles.Customer]
     })
 
@@ -129,10 +132,10 @@ class UserServices {
       CredPassword: input.credPassword
     })
 
-    return {
+    return new CreatedResponse({
       email: input.email,
       messsage: 'create user successfull'
-    }
+    })
   }
 }
 

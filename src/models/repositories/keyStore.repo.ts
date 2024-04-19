@@ -1,16 +1,16 @@
-import { Schema } from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 import KeyStoreModel from '../keyStore.model'
-import { generateRSAKeyPair } from '@src/helpers/rsa'
+import { GenerateRSAKeyPair } from '@src/helpers/rsa'
 
 class KeyStoreRepo {
   static Create = async function (userId: string) {
-    const { publicKey, privateKey } = generateRSAKeyPair()
+    const { PublicKey, PrivateKey } = GenerateRSAKeyPair()
 
-    const publicKeyEncoding = Buffer.from(publicKey).toString('base64')
-    const privateKeyEncoding = Buffer.from(privateKey).toString('base64')
+    const publicKeyEncoding = Buffer.from(PublicKey).toString('base64')
+    const privateKeyEncoding = Buffer.from(PrivateKey).toString('base64')
 
     return KeyStoreModel.create({
-      User: new Schema.Types.ObjectId(userId),
+      User: new mongoose.Types.ObjectId(userId),
       PublicKey: publicKeyEncoding,
       PrivateKey: privateKeyEncoding
     })
@@ -18,7 +18,7 @@ class KeyStoreRepo {
 
   static GetKeyPairByUserId = async function (userId: string) {
     const keyPair = await KeyStoreModel.findOne({
-      User: new Schema.Types.ObjectId(userId)
+      User: new mongoose.Types.ObjectId(userId)
     })
 
     const { PublicKey, PrivateKey } = keyPair ? keyPair.toJSON() : { PublicKey: '', PrivateKey: '' }

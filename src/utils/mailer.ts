@@ -1,6 +1,6 @@
 import nodemailer, { SendMailOptions } from 'nodemailer'
 import config from '@src/config'
-import { InternalServerError } from '@src/core/error.responses'
+import { InternalServerError } from '@src/core/exceptions'
 import { OAuth2Client } from 'google-auth-library'
 
 /**

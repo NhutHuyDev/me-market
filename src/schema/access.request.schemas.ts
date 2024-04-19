@@ -7,7 +7,7 @@ export const SignInSchema = object({
     }).email('Invalid email or password'),
     credPassword: string({
       required_error: 'Password is required'
-    }).min(8, 'Password must be minimum eight characters')
+    })
   })
 })
 

@@ -1,7 +1,7 @@
 import UserControllers from '@src/controllers/user.controllers'
-import asyncHandler from '@src/helpers/asyncHandler'
+import handleException from '@src/helpers/handleException'
 import validateResource from '@src/middlewares/validateResourse'
-import { RequestVerifyOtpSchema, VerifyUserSchema } from '@src/schema/user.request.schemas'
+import { CreateUserSchema, RequestVerifyOtpSchema, VerifyUserSchema } from '@src/schema/user.request.schemas'
 import express from 'express'
 
 const router = express.Router()
@@ -9,13 +9,19 @@ const router = express.Router()
 router.post(
   '/request-otp',
   validateResource(RequestVerifyOtpSchema),
-  asyncHandler(UserControllers.RequestVerifyOtpHandler)
+  handleException(UserControllers.RequestVerifyOtpHandler)
 )
 
 router.post(
   '/verify',
   validateResource(VerifyUserSchema),
-  asyncHandler(UserControllers.VerifyUserHandler)
+  handleException(UserControllers.VerifyUserHandler)
+)
+
+router.post(
+  '/create',
+  validateResource(CreateUserSchema),
+  handleException(UserControllers.CreateUserHandler)
 )
 
 export default router

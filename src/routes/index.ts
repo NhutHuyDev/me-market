@@ -1,8 +1,11 @@
 import express, { Request, Response, NextFunction } from 'express'
 import UserRoutes from './user.routes'
 import AccessRoutes from './access.routes'
+import CredentialRoutes from './credential.routes'
 
-import { NotFoundError } from '@src/core/error.responses'
+import { NotFoundError } from '@src/core/exceptions'
+import deserializeUser from '../middlewares/deserializeUser'
+import handleException from '@src/helpers/handleException'
 
 const router = express.Router()
 
@@ -10,12 +13,15 @@ router.get('/v1/api/health-check', (_, res) => {
   return res.sendStatus(200)
 })
 
+router.use(handleException(deserializeUser))
+
 /**
  * @description main feature routes
  */
 
 router.use('/v1/api/users', UserRoutes)
 router.use('/v1/api/access', AccessRoutes)
+router.use('/v1/api/credential', CredentialRoutes)
 
 /**
  * @description 404 handling

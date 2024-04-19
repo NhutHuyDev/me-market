@@ -1,5 +1,6 @@
 import { Model, model, Schema } from 'mongoose'
 import argon2 from 'argon2'
+import { nanoid } from 'nanoid'
 
 export interface ICredential {
   User: Schema.Types.ObjectId
@@ -11,6 +12,8 @@ export interface ICredential {
 
 interface ICredentialMethods {
   ValidatePassword(CandidatePassword: string): Promise<string>
+  GeneratePasswordResetCode(): string
+  ValidatePasswordResetCode(CandidatePassword: string): Promise<string>
 }
 
 type TCredentialModel = Model<ICredential, object, ICredentialMethods>
@@ -39,9 +42,28 @@ credentialSchema.pre('save', async function () {
   }
 })
 
+credentialSchema.method('GeneratePasswordResetCode', async function GeneratePasswordResetCode() {
+  const expiredTime = Date.now() + 10 * 60 * 1000 // after 10 minutes
+  const newResetCode = nanoid()
+
+  this.PasswordResetCode = newResetCode
+  this.PasswordResetExpires = new Date(expiredTime)
+
+  return newResetCode
+})
+
 credentialSchema.method('ValidatePassword', async function ValidateOtp(CandidatePassword: string) {
   return await argon2.verify(this.CredPassword, CandidatePassword)
 })
+
+credentialSchema.method(
+  'ValidatePasswordResetCode',
+  async function ValidatePasswordResetCode(candidateCode: string) {
+    if (this.PasswordResetCode) {
+      return await argon2.verify(this.PasswordResetCode, candidateCode)
+    }
+  }
+)
 
 const CredentialModel = model<ICredential, TCredentialModel>(
   'Credentials',

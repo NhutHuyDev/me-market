@@ -1,15 +1,15 @@
 import { omit } from 'lodash'
 import { IUser } from '../user.model'
 import { Document, Schema } from 'mongoose'
-import { signJwt } from '@src/helpers/jwt'
+import { DecodeJwt, SignJwt } from '@src/helpers/jwt'
 import config from '@src/config'
 import SessionModel from '../session.model'
 
 class SessionRepo {
   static SignRefreshToken = async function (userId: string, signingKey: string) {
-    const session = await SessionModel.create({ user: userId })
+    const session = await SessionModel.create({ User: userId })
 
-    const refreshToken = signJwt(
+    const refreshToken = SignJwt(
       {
         session: session._id
       },
@@ -32,11 +32,42 @@ class SessionRepo {
   ) {
     const payload = omit(user.toJSON(), ['verified', 'deleted', '__v'])
 
-    const accessToken = signJwt(payload, signingKey, {
+    const accessToken = SignJwt(payload, signingKey, {
       expiresIn: config.app.access_token_expiration
     })
 
     return accessToken
+  }
+
+  static UpdateRefreshToken = async function (userId: string, signingKey: string) {
+    const currentSession = await SessionModel.findById(userId)
+
+    if (currentSession) {
+      const currentRefreshToken = currentSession.RefreshToken
+
+      const decodeRefreshToken = currentRefreshToken ? DecodeJwt(currentRefreshToken) : null
+
+      if (!decodeRefreshToken || !decodeRefreshToken.payload.exp) return null
+
+      const oldExpiredTime = decodeRefreshToken.payload.exp
+
+      const newRefreshToken = SignJwt(
+        {
+          session: currentSession._id
+        },
+        signingKey,
+        {
+          expiresIn: oldExpiredTime - Math.floor(Date.now() / 1000)
+        }
+      )
+
+      currentSession.RefreshToken = newRefreshToken
+      currentSession.save()
+
+      return newRefreshToken
+    } else {
+      return null
+    }
   }
 }
 

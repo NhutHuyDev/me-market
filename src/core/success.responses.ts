@@ -1,20 +1,6 @@
 import { Response } from 'express'
 import { STATUS_CODE } from '@src/utils/httpStatusRespones'
-
-class SuccessResponse {
-  code: number
-  status: string
-  data: any
-  constructor(statusCode: number, metadata: any) {
-    this.code = statusCode
-    this.status = 'sucess'
-    this.data = metadata
-  }
-
-  send(res: Response) {
-    return res.status(this.code).json(this)
-  }
-}
+import { SuccessResponse } from './response'
 
 /**
  * @description Ok response

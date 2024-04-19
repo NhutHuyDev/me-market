@@ -1,49 +1,32 @@
 import { STATUS_CODE, DEFAULT_STATUS_MESSAGE } from '@src/utils/httpStatusRespones'
+import { ErrorResponse, ErrorStatus } from './response'
 
-class ErrorResponse extends Error {
-  code: number
-  status: string
-  constructor(message: string, statusCode: number, status: string) {
-    super(message)
-    this.code = statusCode
-    this.status = status
+/**
+ * @description Bad request response
+ */
+export class BadRequestResponse extends ErrorResponse {
+  constructor(message = DEFAULT_STATUS_MESSAGE.BAD_REQUEST) {
+    super(message, STATUS_CODE.BAD_REQUEST, ErrorStatus.Error)
   }
 }
 
 /**
- * @description Bad request error
+ * @description Conflict response
  */
-export class BadRequestError extends ErrorResponse {
-  constructor(
-    message = DEFAULT_STATUS_MESSAGE.BAD_REQUEST,
-    statusCode = STATUS_CODE.BAD_REQUEST,
-    status = 'error'
-  ) {
-    super(message, statusCode, status)
+export class ConflictResponse extends ErrorResponse {
+  constructor(message = DEFAULT_STATUS_MESSAGE.CONFLICT) {
+    super(message, STATUS_CODE.CONFLICT, ErrorStatus.Error)
   }
 }
 
 /**
- * @description Conflict error
+ * @description Unauthorized response
  */
-export class ConflictError extends ErrorResponse {
-  constructor(
-    message = DEFAULT_STATUS_MESSAGE.CONFLICT,
-    statusCode = STATUS_CODE.CONFLICT,
-    status = 'error'
-  ) {
-    super(message, statusCode, status)
-  }
-}
-
-/**
- * @description Unauthorized error
- */
-export class UnauthorizedError extends ErrorResponse {
+export class UnauthorizedResponse extends ErrorResponse {
   constructor(
     message = DEFAULT_STATUS_MESSAGE.UNAUTHORIZED,
     statusCode = STATUS_CODE.UNAUTHORIZED,
-    status = 'error'
+    status = ErrorStatus.Error
   ) {
     super(message, statusCode, status)
   }
@@ -52,24 +35,11 @@ export class UnauthorizedError extends ErrorResponse {
 /**
  * @description Forbidden error
  */
-export class ForbiddenError extends ErrorResponse {
+export class ForbiddenResponse extends ErrorResponse {
   constructor(
     message = DEFAULT_STATUS_MESSAGE.FORBIDDEN,
     statusCode = STATUS_CODE.FORBIDDEN,
-    status = 'error'
-  ) {
-    super(message, statusCode, status)
-  }
-}
-
-/**
- * @description  Internal server error
- */
-export class InternalServerError extends ErrorResponse {
-  constructor(
-    message = DEFAULT_STATUS_MESSAGE.INTERNAL_SERVER_ERROR,
-    statusCode = STATUS_CODE.INTERNAL_SERVER_ERROR,
-    status = 'error'
+    status = ErrorStatus.Error
   ) {
     super(message, statusCode, status)
   }
@@ -79,11 +49,24 @@ export class InternalServerError extends ErrorResponse {
  * @description  Not found error
  */
 
-export class NotFoundError extends ErrorResponse {
+export class NotFoundResponse extends ErrorResponse {
   constructor(
     message = DEFAULT_STATUS_MESSAGE.NOT_FOUND,
     statusCode = STATUS_CODE.NOT_FOUND,
-    status = 'error'
+    status = ErrorStatus.Error
+  ) {
+    super(message, statusCode, status)
+  }
+}
+
+/**
+ * @description  Internal server error
+ */
+export class InternalServerResponse extends ErrorResponse {
+  constructor(
+    message = DEFAULT_STATUS_MESSAGE.INTERNAL_SERVER_ERROR,
+    statusCode = STATUS_CODE.INTERNAL_SERVER_ERROR,
+    status = ErrorStatus.Fail
   ) {
     super(message, statusCode, status)
   }
