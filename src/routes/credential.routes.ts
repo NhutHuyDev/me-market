@@ -1,6 +1,6 @@
 import CredentialControllers from '@src/controllers/credential.controllers'
-import handleException from '@src/helpers/handleException'
-import validateResource from '@src/middlewares/validateResourse'
+import HandleException from '@src/helpers/handleException'
+import ValidateResource from '@src/middlewares/validateResourse'
 import {
   RequestResetPasswordSchema,
   ResetPasswordSchema
@@ -11,14 +11,14 @@ const router = express.Router()
 
 router.post(
   '/request-reset-password',
-  validateResource(RequestResetPasswordSchema),
-  handleException(CredentialControllers.RequestResetPasswordHandler)
+  ValidateResource(RequestResetPasswordSchema),
+  HandleException(CredentialControllers.RequestResetPasswordHandler)
 )
 
 router.post(
-  '/reset-password',
-  validateResource(ResetPasswordSchema),
-  handleException(CredentialControllers.ResetPasswordHandler)
+  '/reset-password/:userId/:passwordResetCode',
+  ValidateResource(ResetPasswordSchema),
+  HandleException(CredentialControllers.ResetPasswordHandler)
 )
 
 export default router

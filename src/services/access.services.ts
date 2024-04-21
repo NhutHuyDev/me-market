@@ -7,7 +7,7 @@ import KeyStoreRepo from '@src/models/repositories/keyStore.repo'
 import SessionRepo from '@src/models/repositories/session.repo'
 import SessionModel from '@src/models/session.model'
 import UserModel from '@src/models/user.model'
-import IsValidObjectId from '@src/utils/checkValidObjectId'
+import { IsValidObjectId } from '@src/utils/mongo.utils'
 
 class AccessServices {
   static SignIn = async function (credLogin: string, credPassword: string) {

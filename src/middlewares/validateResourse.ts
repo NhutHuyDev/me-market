@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { AnyZodObject, ZodError } from 'zod'
 import { BadRequestResponse } from '@src/core/error.responses'
 
-const validateResource =
+const ValidateResource =
   (schema: AnyZodObject) => (req: Request, res: Response, next: NextFunction) => {
     try {
       schema.parse({
@@ -17,11 +17,11 @@ const validateResource =
         const errMsg = JSON.stringify(errors.fieldErrors)
 
         const validataError = new BadRequestResponse(errMsg)
-        validataError.send(res)
+        validataError.Send(res)
       } else {
         next(error)
       }
     }
   }
 
-export default validateResource
+export default ValidateResource

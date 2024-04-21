@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 import CredentialModel from '../credential.model'
 
 class CredentialRepo {
@@ -10,13 +10,13 @@ class CredentialRepo {
 
   static FindByUserId = async function (userId: string) {
     return CredentialModel.findOne({
-      User: new Schema.Types.ObjectId(userId)
+      User: new mongoose.Types.ObjectId(userId)
     })
   }
 
   static FindValidRequestResetPassword = async function (userId: string) {
     return CredentialModel.findOne({
-      User: new Schema.Types.ObjectId(userId),
+      User: new mongoose.Types.ObjectId(userId),
       PasswordResetExpires: { $ne: null, $gt: new Date() }
     })
   }

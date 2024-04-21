@@ -43,30 +43,26 @@ class UserServices {
     /**
      * @description 3. gửi mail
      */
-    try {
-      const parentDir = path.resolve(__dirname, '..')
-      const verifyEmailTemplate = fs.readFileSync(
-        path.join(parentDir, 'templates/verifyUser.template.html'),
-        'utf-8'
-      )
 
-      const html = verifyEmailTemplate.replace('{{otp}}', newOtp)
+    const parentDir = path.resolve(__dirname, '..')
+    const verifyEmailTemplate = fs.readFileSync(
+      path.join(parentDir, 'templates/verifyUser.template.html'),
+      'utf-8'
+    )
 
-      await sendEmail({
-        to: email,
-        from: 'nguyennhuthuy.dev@gmail.com',
-        subject: 'Verify your email from MeMarket',
-        html: html
-      })
+    const html = verifyEmailTemplate.replace('{{otp}}', newOtp)
 
-      return new OkResponse({
-        email,
-        message: `access your email - ${email} to get reset password code`
-      })
-    } catch (error) {
-      console.log(error)
-      throw new InternalServerError()
-    }
+    await sendEmail({
+      to: email,
+      from: 'nguyennhuthuy.dev@gmail.com',
+      subject: 'Verify your email from MeMarket',
+      html: html
+    })
+
+    return new OkResponse({
+      email,
+      message: `access your email - ${email} to get reset password code`
+    })
   }
 
   static VerifyUser = async function (email: string, candidateOtp: string) {
@@ -107,7 +103,15 @@ class UserServices {
     }
 
     /**
-     * @description 2. tạo thông tin ban đầu cho user
+     * @description 2. kiểm tra email đã tồn tại chưa
+     */
+    const existingUser = await UserRepo.FindByEmail(input.email)
+    if (existingUser) {
+      return new BadRequestResponse('email is already in use. Please use another email!')
+    }
+
+    /**
+     * @description 3. tạo thông tin ban đầu cho user
      */
     const newUser = await UserModel.create({
       Email: input.email,
@@ -119,12 +123,12 @@ class UserServices {
     })
 
     /**
-     * @description 3. tạo key store
+     * @description 4. tạo key store
      */
     await KeyStoreRepo.Create(String(newUser._id))
 
     /**
-     * @description 4. tạo thông tin đăng nhập
+     * @description 5. tạo thông tin đăng nhập
      */
     await CredentialModel.create({
       User: newUser._id,

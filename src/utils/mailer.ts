@@ -3,15 +3,6 @@ import config from '@src/config'
 import { InternalServerError } from '@src/core/exceptions'
 import { OAuth2Client } from 'google-auth-library'
 
-/**
- * @description create a test smtp account
- */
-
-async function createTestCreds() {
-  const creds = await nodemailer.createTestAccount()
-  console.log({ creds })
-}
-
 const GOOGLE_MAILER_CLIENT_ID = config.smtp.clientId
 const GOOGLE_MAILER_CLIENT_SECRET = config.smtp.clientSecret
 const GOOGLE_MAILER_REFRESH_TOKEN = config.smtp.refreshToken
@@ -25,7 +16,7 @@ myOAuth2Client.setCredentials({
   refresh_token: GOOGLE_MAILER_REFRESH_TOKEN
 })
 
-async function sendEmail(payload: SendMailOptions) {
+async function SendEmail(payload: SendMailOptions) {
   const myAccessTokenObject = await myOAuth2Client.getAccessToken()
 
   const accessToken = myAccessTokenObject?.token
@@ -50,4 +41,4 @@ async function sendEmail(payload: SendMailOptions) {
   })
 }
 
-export default sendEmail
+export default SendEmail

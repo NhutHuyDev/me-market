@@ -1,4 +1,8 @@
-import { TCreateUserSchema, TRequestVerifyOtpSchema, TVerifyUserSchema } from '@src/schema/user.request.schemas'
+import {
+  TCreateUserSchema,
+  TRequestVerifyOtpSchema,
+  TVerifyUserSchema
+} from '@src/schema/user.request.schemas'
 import UserServices from '@src/services/user.services'
 import { Request, Response } from 'express'
 
@@ -8,7 +12,7 @@ class UserControllers {
     res: Response
   ) {
     const response = await UserServices.RequestVerifyOtp(req.body.email)
-    response.send(res)
+    response.Send(res)
   }
 
   static VerifyUserHandler = async function (
@@ -19,7 +23,7 @@ class UserControllers {
     const candidateOtp = req.body.otp
 
     const response = await UserServices.VerifyUser(email, candidateOtp)
-    response.send(res)
+    response.Send(res)
   }
 
   static CreateUserHandler = async function (
@@ -29,7 +33,7 @@ class UserControllers {
     const input = req.body
 
     const response = await UserServices.CreateUser(input)
-    response.send(res)
+    response.Send(res)
   }
 }
 

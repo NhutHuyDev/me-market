@@ -15,42 +15,40 @@ export const VerifyUserSchema = object({
     }).email('email is not valid'),
     otp: string({
       required_error: 'otp is required'
-    })
-      .regex(new RegExp('^[0-9]{1,6}$'), 'otp is not valid')
-      .min(6, 'otp is not valid')
+    }).regex(new RegExp('^[0-9]{1,6}$'), 'otp is not valid')
   })
 })
 
 export const CreateUserSchema = object({
   body: object({
     email: string({
-      required_error: 'Email is required'
-    }).email('Not a valid email'),
+      required_error: 'email is required'
+    }).email('email is not valid'),
 
     mobile: string({
-      required_error: 'Mobile phone is required'
-    }).length(10, 'Mobile phone must have 10 digits'),
+      required_error: 'mobile phone is required'
+    }).regex(/(0[3|5|7|8|9])+([0-9]{8})\b/g, 'mobile phone must have 10 digits, start with 0'),
 
     firstName: string({
-      required_error: 'First name is required'
+      required_error: 'first name is required'
     }),
 
     lastName: string({
-      required_error: 'Last name is required'
+      required_error: 'last name is required'
     }),
 
     credPassword: string({
-      required_error: 'Password is required'
+      required_error: 'password is required'
     }).regex(
       new RegExp('(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[\\d])(?=.*?[^\\sa-zA-Z0-9]).{8,}'),
-      'Password must be minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character'
+      'password must be minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character'
     ),
 
     passwordConfirmation: string({
-      required_error: 'Password confirmation is required'
+      required_error: 'password confirmation is required'
     })
   }).refine((data) => data.credPassword === data.passwordConfirmation, {
-    message: 'Passwords do not match',
+    message: 'password confirmation do not match',
     path: ['passwordConfirmation']
   })
 })

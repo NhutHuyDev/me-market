@@ -6,7 +6,7 @@ type AsyncFunction<T = any, U = any> = (
   next: NextFunction
 ) => Promise<any>
 
-const handleException = (fn: AsyncFunction) => {
+const HandleException = (fn: AsyncFunction) => {
   return (req: Request, res: Response, next: NextFunction) => {
     fn(req, res, next).catch((error: any) => {
       next(error)
@@ -14,4 +14,4 @@ const handleException = (fn: AsyncFunction) => {
   }
 }
 
-export default handleException
+export default HandleException

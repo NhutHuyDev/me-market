@@ -10,7 +10,7 @@ export class ApiResponse {
     this.code = statusCode
   }
 
-  send(res: Response) {
+  Send(res: Response) {
     return res.status(this.code).json(this)
   }
 }
@@ -28,7 +28,7 @@ export class SuccessResponse extends ApiResponse {
     this.data = metadata
   }
 
-  send(res: Response) {
+  Send(res: Response) {
     return res.status(this.code).json(this)
   }
 }
@@ -51,7 +51,7 @@ export class ErrorResponse extends ApiResponse {
     this.status = status
   }
 
-  send(res: Response) {
+  Send(res: Response) {
     return res.status(this.code).json(this)
   }
 }

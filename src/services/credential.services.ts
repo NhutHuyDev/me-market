@@ -1,9 +1,10 @@
-import { BadRequestError, InternalServerError } from '@src/core/exceptions'
+import { InternalServerError } from '@src/core/exceptions'
 import path from 'path'
 import fs from 'fs'
 import UserRepo from '@src/models/repositories/user.repo'
 import CredentialRepo from '@src/models/repositories/credential.repo'
 import sendEmail from '@src/utils/mailer'
+import { BadRequestResponse, InternalServerResponse } from '@src/core/error.responses'
 
 class CredentialServices {
   static RequestResetPassword = async function (email: string) {
@@ -12,7 +13,7 @@ class CredentialServices {
      */
     const user = await UserRepo.FindByEmail(email)
     if (!user) {
-      throw new BadRequestError("email doesn't exist, please create your account")
+      throw new BadRequestResponse("email doesn't exist, please create your account")
     }
 
     /**
@@ -20,50 +21,41 @@ class CredentialServices {
      */
     const userCredential = await CredentialRepo.FindByUserId(String(user._id))
 
-    if (!userCredential) throw new InternalServerError()
+    if (!userCredential) throw new InternalServerResponse()
 
     const passwordResetCode = userCredential.GeneratePasswordResetCode()
     await userCredential.save()
 
-    const resetPasswordUrl = `http://localhost:3000/auth/new-password/${user._id}/${passwordResetCode}`
+    // const resetPasswordUrl = `http://localhost:3000/auth/new-password/${user._id}/${passwordResetCode}`
 
     /**
      * @description 3. tạo template để gửi mail
      */
     const parentDir = path.resolve(__dirname, '..')
 
-    try {
-      const emailTemplate = fs.readFileSync(
-        path.join(parentDir, 'templates/resetPassword.template.html'),
-        'utf-8'
-      )
+    const emailTemplate = fs.readFileSync(
+      path.join(parentDir, 'templates/resetPassword.template.html'),
+      'utf-8'
+    )
 
-      const html = emailTemplate.replace('{{passwordResetUrl}}', resetPasswordUrl)
+    const html = emailTemplate
+      .replace('{{passwordResetCode}}', passwordResetCode)
+      .replace('{{userId}}', String(userCredential.User))
 
-      /**
-       * @description 4. gửi mail
-       */
-      await sendEmail({
-        to: user.Email,
-        from: 'test@example.com',
-        subject: 'Reset your password',
-        text: `Password reset code: ${passwordResetCode}. Id ${user._id}`,
-        html: html,
-        attachments: [
-          {
-            filename: 'icon-2.png',
-            path: path.join(parentDir, 'templates/img.template/icon-2.png'),
-            cid: 'imageUrl'
-          }
-        ]
-      })
-      console.log(`Verify OTP sent to ${email}`)
-      return {
-        email: email,
-        message: `access your email - ${email} to get reset password code`
-      }
-    } catch (error) {
-      throw new InternalServerError()
+    /**
+     * @description 4. gửi mail
+     */
+    await sendEmail({
+      to: user.Email,
+      from: 'test@example.com',
+      subject: 'Reset your password',
+      text: `Password reset code: ${passwordResetCode}. Id ${user._id}`,
+      html: html
+    })
+    console.log(`Verify OTP sent to ${email}`)
+    return {
+      email: email,
+      message: `access your email - ${email} to get reset password code`
     }
   }
 
@@ -77,13 +69,13 @@ class CredentialServices {
      */
     const userCredential = await CredentialRepo.FindValidRequestResetPassword(userId)
 
-    if (!userCredential) throw new BadRequestError('could not reset user password')
+    if (!userCredential) throw new BadRequestResponse('could not reset user password')
 
     /**
      * @description 2. kiểm tra password reset code có tồn tại trong database hay không
      */
     if (!userCredential.PasswordResetCode) {
-      throw new BadRequestError('could not reset user password')
+      throw new BadRequestResponse('could not reset user password')
     }
 
     /**
@@ -100,7 +92,7 @@ class CredentialServices {
       }
     }
 
-    throw new BadRequestError('could not reset user password')
+    throw new BadRequestResponse('could not reset user password')
   }
 }
 

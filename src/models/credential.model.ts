@@ -27,22 +27,18 @@ const credentialSchema = new Schema<ICredential, TCredentialModel, ICredentialMe
 })
 
 credentialSchema.pre('save', async function () {
-  if (!this.isModified('CredPassword')) {
-    return
-  } else {
+  if (this.isModified('CredPassword')) {
     const hashPassword = await argon2.hash(this.CredPassword)
     this.CredPassword = hashPassword
   }
 
-  if (!this.PasswordResetCode || !this.isModified('PasswordResetCode')) {
-    return
-  } else {
+  if (this.PasswordResetCode && this.isModified('PasswordResetCode')) {
     const hashResetCode = await argon2.hash(this.PasswordResetCode)
     this.PasswordResetCode = hashResetCode
   }
 })
 
-credentialSchema.method('GeneratePasswordResetCode', async function GeneratePasswordResetCode() {
+credentialSchema.method('GeneratePasswordResetCode', function GeneratePasswordResetCode() {
   const expiredTime = Date.now() + 10 * 60 * 1000 // after 10 minutes
   const newResetCode = nanoid()
 
@@ -62,6 +58,7 @@ credentialSchema.method(
     if (this.PasswordResetCode) {
       return await argon2.verify(this.PasswordResetCode, candidateCode)
     }
+    return false
   }
 )
 

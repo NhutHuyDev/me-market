@@ -13,7 +13,7 @@ class AccessControllers {
     const credPassword = req.body.credPassword
 
     const response = await AccessServices.SignIn(credLogin, credPassword)
-    response.send(res)
+    response.Send(res)
   }
 
   static SignOutHandler = async function (req: Request, res: Response) {
@@ -21,7 +21,7 @@ class AccessControllers {
     const clientId = req.headers[customHttpHeaders.CLIENT_ID] as string
 
     const response = await AccessServices.SignOut(refreshToken, clientId)
-    response.send(res)
+    response.Send(res)
   }
 
   static RefreshAccessTokenHandler = async function (req: Request, res: Response) {
@@ -29,7 +29,7 @@ class AccessControllers {
     const clientId = req.headers[customHttpHeaders.CLIENT_ID] as string
 
     const response = await AccessServices.RefreshAccessToken(refreshToken, clientId)
-    response.send(res)
+    response.Send(res)
   }
 }
 

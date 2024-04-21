@@ -2,7 +2,7 @@ import { model, Schema } from 'mongoose'
 
 export enum SystemRoles {
   SuperAdmin = 'Super Admin',
-  Shop = 'Shop',
+  Seller = 'Seller',
   Customer = 'Customer'
 }
 
