@@ -6,12 +6,12 @@ export interface IKeyStore {
   PrivateKey: string
 }
 
-const KeyStoreSchema = new Schema<IKeyStore>({
+const keyStoreSchema = new Schema<IKeyStore>({
   User: { type: Schema.Types.ObjectId, ref: 'Users' },
   PublicKey: { type: String, required: true },
   PrivateKey: { type: String, required: true }
 })
 
-const KeyStoreModel = model<IKeyStore>('KeyStore', KeyStoreSchema, 'KeyStore')
+const KeyStoreModel = model<IKeyStore>('KeyStore', keyStoreSchema, 'KeyStore')
 
 export default KeyStoreModel

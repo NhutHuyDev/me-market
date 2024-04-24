@@ -1,0 +1,34 @@
+[
+    {
+        "ProductName": "Áo thun LV mẫu mới giảm giá sốc",
+        "ProductDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+        "ProductPrice": 1500,
+        "ProductCategory": "Clothes",
+        "ProductAttributes": {
+            "Brand": "LV",
+            "Size": "XL",
+            "Material": "Cotton"
+        }
+    },
+    {
+        "ProductName": "Tủ đồ IKEA giảm giá sốc",
+        "ProductDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+        "ProductPrice": 1250,
+        "ProductCategory": "Furniture",
+        "ProductAttributes": {
+            "Brand": "IKEA",
+            "Model": "43",
+            "Color": "Wood"
+        }
+    },
+    {
+        "ProductName": "Đèn pin nhập khẩu Nhật Bản",
+        "ProductDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+        "ProductPrice": 1500,
+        "ProductCategory": "Electronics",
+        "ProductAttributes": {
+            "Manufacturer": "Japan Ecom",
+            "Model": "XJP230"
+        }
+    }
+]

@@ -4,6 +4,7 @@ import AccessRoutes from './access.routes'
 import CredentialRoutes from './credential.routes'
 
 import SellerRoutes from './seller.routes'
+import ProductRoutes from './product.routes'
 
 import { NotFoundError } from '@src/core/exceptions'
 import handleException from '@src/helpers/handleException'
@@ -29,6 +30,7 @@ router.use('/v1/api/credential', CredentialRoutes)
  * @description seller feature routes
  */
 router.use('/v1/api/seller', SellerRoutes)
+router.use('/v1/api/products', ProductRoutes)
 
 /**
  * @description 404 handling
