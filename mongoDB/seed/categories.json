@@ -1,19 +1,19 @@
 [
     {
-        "_id": "Electronics",
+        "_id": "electronics",
         "CategoryTitle": "Electronics",
         "CategoryParent": null,
         "CategoryChildren": [],
         "CategoryAttribute": ["Brand", ""]
     },
     {
-        "_id": "Clothes",
+        "_id": "clothes",
         "CategoryTitle": "Clothes",
         "CategoryParent": null,
         "CategoryChildren": []
     },
     {
-        "_id": "Furniture",
+        "_id": "furniture",
         "CategoryTitle": "Furniture",
         "CategoryParent": null,
         "CategoryChildren": []

@@ -26,18 +26,15 @@ const productSchema = new Schema<IProduct>(
     Seller: { type: Schema.Types.ObjectId, ref: 'Users' },
     ProductCategory: { type: String, ref: 'Categories' },
     ProductAttributes: [
-      new Schema(
-        {
-          code: { type: String, required: true },
-          value: { type: String, required: true },
-          name: { type: String, required: true }
-        },
-        { _id: false }
-      )
+      {
+        code: { type: String, required: true },
+        value: { type: String, required: true },
+        name: { type: String, required: true }
+      }
     ],
     ProductAvgRating: { type: Number, default: 0, max: 5, min: 0 },
-    IsDraft: { type: Boolean, default: true, select: false },
-    IsPublished: { type: Boolean, default: false, select: false }
+    IsDraft: { type: Boolean, default: true },
+    IsPublished: { type: Boolean, default: false }
   },
   {
     timestamps: true
@@ -49,6 +46,11 @@ productSchema.pre('save', function () {
     const productSlug = slugify(this.ProductName, { lower: true })
     this.ProductSlug = productSlug
   }
+})
+
+productSchema.index({
+  ProductName: 'text',
+  ProductDescription: 'text'
 })
 
 const ProductModel = model<IProduct>('Products', productSchema, 'Products')

@@ -1,18 +1,21 @@
 import { TProductSchema } from '@src/schema/product.request.schemas'
-import IProductStategy from './IProductStategy'
+import IProductStategy, { TProductStategyResponse } from './IProductStategy'
 import { TypeOf, object, string } from 'zod'
-import { OkResponse } from '@src/core/success.responses'
 import ProductModel from '@src/models/product.model'
-import { BadRequestResponse, UnauthorizedResponse } from '@src/core/error.responses'
 import { ValidateSchema } from '@src/utils/validateSchema'
 import slugify from 'slugify'
 
 export class Electronics implements IProductStategy {
-  async Create(input: TProductSchema & TAttributeElectronicsSchema) {
+  async Create(
+    input: TProductSchema & TAttributeElectronicsSchema
+  ): Promise<TProductStategyResponse> {
     const validateResult = ValidateSchema(AttributeElectronicsSchema, { body: input })
 
     if (!validateResult.IsValid && validateResult.Message) {
-      return new BadRequestResponse(validateResult.Message)
+      return {
+        success: false,
+        message: validateResult.Message
+      }
     }
 
     const ProductAttributes = [
@@ -25,16 +28,22 @@ export class Electronics implements IProductStategy {
       ProductAttributes: ProductAttributes
     })
 
-    return new OkResponse({
-      newProduct: newProduct
-    })
+    return {
+      success: true,
+      product: newProduct
+    }
   }
 
-  async Update(input: TProductSchema & TAttributeElectronicsSchema) {
+  async Update(
+    input: TProductSchema & TAttributeElectronicsSchema
+  ): Promise<TProductStategyResponse> {
     const validateResult = ValidateSchema(AttributeElectronicsSchema, { body: input })
 
     if (!validateResult.IsValid && validateResult.Message) {
-      return new BadRequestResponse(validateResult.Message)
+      return {
+        success: false,
+        message: validateResult.Message
+      }
     }
 
     input.ProductSlug = slugify(input.ProductName)
@@ -59,11 +68,15 @@ export class Electronics implements IProductStategy {
     )
 
     if (updatedProduct) {
-      return new OkResponse({
-        updatedProduct: updatedProduct
-      })
+      return {
+        success: true,
+        product: updatedProduct
+      }
     } else {
-      return new UnauthorizedResponse('cannot update the product')
+      return {
+        success: false,
+        message: 'cannot update the product'
+      }
     }
   }
 }
