@@ -4,7 +4,7 @@ import HandleException from '@src/helpers/handleException'
 import RequireRoles from '@src/middlewares/requireRoles'
 import ValidateResource from '@src/middlewares/validateResourse'
 import { SystemRoles } from '@src/models/role.model'
-import { DiscountSchema } from '@src/schema/discount.request.schemas'
+import { DiscountQuerySchema, DiscountSchema } from '@src/schema/discount.request.schemas'
 import { ProductSchema } from '@src/schema/product.request.schemas'
 import express from 'express'
 
@@ -21,10 +21,16 @@ router.post(
   HandleException(DiscountControllers.CreateHandler)
 )
 
-// router.patch(
-//   '/',
-//   ValidateResource(ProductSchema),
-//   HandleException(ProductControllers.UpdateHandler)
-// )
+router.patch(
+  '/',
+  ValidateResource(DiscountSchema),
+  HandleException(DiscountControllers.UpdateHandler)
+)
+
+router.get(
+  '/',
+  ValidateResource(DiscountQuerySchema),
+  HandleException(DiscountControllers.FindBySellerHandler)
+)
 
 export default router

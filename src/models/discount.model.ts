@@ -33,6 +33,7 @@ export interface IDiscount {
 const discountSchema = new Schema<IDiscount>({
   DiscountCode: {
     type: String,
+    unique: true,
     required: true
   },
   DiscountName: {
@@ -102,6 +103,11 @@ const discountSchema = new Schema<IDiscount>({
       default: []
     }
   ]
+})
+
+discountSchema.index({
+  DiscountName: 'text',
+  DiscountDescription: 'text'
 })
 
 const DiscountModel = model<IDiscount>('Discounts', discountSchema, 'Discounts')

@@ -1,6 +1,6 @@
 import { DiscountAppliedType, DiscountType } from '@src/models/discount.model'
 import { IsValidObjectId } from '@src/utils/mongo.utils'
-import { array, boolean, coerce, nativeEnum, number, object, set, string, TypeOf } from 'zod'
+import { array, boolean, coerce, nativeEnum, number, object, set, string, TypeOf, z } from 'zod'
 
 export const DiscountSchema = object({
   body: object({
@@ -55,4 +55,24 @@ export const DiscountSchema = object({
   })
 })
 
+export const DiscountQuerySchema = object({
+  query: object({
+    search: string().optional(),
+    type: nativeEnum(DiscountType).optional(),
+    applied_type: nativeEnum(DiscountAppliedType).optional(),
+    status: z.enum(['active', 'inactive']).optional(),
+    sort_by: string().optional(),
+    limit: coerce
+      .number({ invalid_type_error: 'limit has to be a positive integer' })
+      .min(10, 'limit have to greater than or equal to 10')
+      .optional(),
+    page: coerce
+      .number({ invalid_type_error: 'page has to be a positive integer' })
+      .int()
+      .min(1, 'page has to be greater than 0')
+      .optional()
+  })
+})
+
 export type TDiscountSchema = TypeOf<typeof DiscountSchema>['body']
+export type TDiscountQuerySchema = TypeOf<typeof DiscountQuerySchema>['query']
