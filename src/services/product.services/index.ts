@@ -2,7 +2,7 @@ import IProductStategy, { TProductStategyResponse } from './product.strategies/I
 import { Clothes } from './product.strategies/Clothes'
 import { Electronics } from './product.strategies/Electronics'
 import { Furnitures } from './product.strategies/Furniture'
-import CategoryModel from '@src/models/categories.model'
+import CategoryModel from '@src/models/category.model'
 import { BadRequestResponse, UnauthorizedResponse } from '@src/core/error.responses'
 import { TProductQuerySchema, TProductSchema } from '@src/schema/product.request.schemas'
 import ProductModel from '@src/models/product.model'
