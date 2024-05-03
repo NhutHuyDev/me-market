@@ -328,8 +328,8 @@ class ProductServices {
   }
 }
 
-ProductServices.RegisterCategory('Clothes', new Clothes())
-ProductServices.RegisterCategory('Electronics', new Electronics())
-ProductServices.RegisterCategory('Furniture', new Furnitures())
+ProductServices.RegisterCategory('clothes', new Clothes())
+ProductServices.RegisterCategory('electronics', new Electronics())
+ProductServices.RegisterCategory('furniture', new Furnitures())
 
 export default ProductServices

@@ -23,8 +23,7 @@ const categorySchema = new Schema<ICategory>({
   CategoryChildren: [
     {
       type: String,
-      ref: 'Categories',
-      default: []
+      ref: 'Categories'
     }
   ]
 })

@@ -20,7 +20,7 @@ type TCredentialModel = Model<ICredential, object, ICredentialMethods>
 
 const credentialSchema = new Schema<ICredential, TCredentialModel, ICredentialMethods>({
   User: { type: Schema.Types.ObjectId, ref: 'Users' },
-  CredLogin: { type: String, required: true },
+  CredLogin: { type: String, required: true, unique: true },
   CredPassword: { type: String, required: true },
   PasswordResetCode: { type: String, default: null },
   PasswordResetExpires: { type: Date, default: null }

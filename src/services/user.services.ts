@@ -11,6 +11,7 @@ import CredentialModel from '@src/models/credential.model'
 import { SystemRoles } from '@src/models/role.model'
 import { BadRequestResponse, ConflictResponse } from '@src/core/error.responses'
 import { CreatedResponse, OkResponse } from '@src/core/success.responses'
+import CartModel from '@src/models/cart.model'
 
 class UserServices {
   static RequestVerifyOtp = async function (email: string) {
@@ -134,6 +135,13 @@ class UserServices {
       User: newUser._id,
       CredLogin: input.email,
       CredPassword: input.credPassword
+    })
+
+    /**
+     * @description 6. tạo thông tin giỏ hàng
+     */
+    await CartModel.create({
+      Buyer: newUser._id
     })
 
     return new CreatedResponse({

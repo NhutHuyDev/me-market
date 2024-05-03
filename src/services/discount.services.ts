@@ -221,34 +221,7 @@ class DiscountServices {
     }
   }
 
-  // static ComputeDiscountAmount = async function (
-  //   discountCode: string,
-  //   customerId: string,
-  //   cart: object
-  // ) {}
-
-  // static CancelUsingDiscount = async function (discountCode: string, customerId: string) {
-  //   const discount = await DiscountModel.findOne({
-  //     DiscountCode: discountCode
-  //   })
-
-  //   if (!discount) {
-  //     return new NotFoundResponse("Discount doesn't exist")
-  //   }
-
-  //   const cancelDiscount = await DiscountModel.findByIdAndUpdate(discount._id, {
-  //     $pull: {
-  //       ForCustomers: customerId
-  //     },
-  //     $inc: {
-  //       UsedCount: -1
-  //     }
-  //   })
-
-  //   return new OkResponse({
-  //     cancelDiscount: cancelDiscount
-  //   })
-  // }
+  static ComputeDiscountAmount = async function (discountIds: string[], productIds: string[]) {}
 }
 
 export default DiscountServices

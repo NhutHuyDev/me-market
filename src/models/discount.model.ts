@@ -72,8 +72,7 @@ const discountSchema = new Schema<IDiscount>({
   ForCustomers: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Users',
-      default: []
+      ref: 'Users'
     }
   ],
   MaxUsagesPerBuyer: {

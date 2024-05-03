@@ -12,7 +12,7 @@ const DEFAULT_CONFIG = {
   },
 
   PRO: {
-    PORT: 8080,
+    PORT: 5000,
     ACCESS_TOKEN_EXPIRATION: '1 days',
     REFESH_TOKEN_EXPIRATION: '90 days',
     DB: {

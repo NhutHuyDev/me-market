@@ -3,6 +3,8 @@ import UserRoutes from './user.routes'
 import AccessRoutes from './access.routes'
 import CredentialRoutes from './credential.routes'
 
+import CartRoutes from './cart.routes'
+
 import SellerRoutes from './seller.routes'
 import ProductRoutes from './product.routes'
 import DiscountRoutes from './discount.routes'
@@ -20,7 +22,7 @@ router.get('/v1/api/health-check', (_, res) => {
 router.use(handleException(DeserializeUser))
 
 /**
- * @description auth feature routes
+ * @description auth features
  */
 
 router.use('/v1/api/users', UserRoutes)
@@ -28,7 +30,12 @@ router.use('/v1/api/access', AccessRoutes)
 router.use('/v1/api/credential', CredentialRoutes)
 
 /**
- * @description seller feature routes
+ * @description cart & order features
+ */
+router.use('/v1/api/carts', CartRoutes)
+
+/**
+ * @description seller features
  */
 router.use('/v1/api/seller', SellerRoutes)
 router.use('/v1/api/products', ProductRoutes)
