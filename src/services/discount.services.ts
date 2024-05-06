@@ -1,9 +1,10 @@
-import { BadRequestResponse, NotFoundResponse } from '@src/core/error.responses'
+import { BadRequestResponse } from '@src/core/error.responses'
 import { OkResponse } from '@src/core/success.responses'
 import DiscountModel, { DiscountAppliedType, DiscountType } from '@src/models/discount.model'
 import { TDiscountQuerySchema, TDiscountSchema } from '@src/schema/discount.request.schemas'
 import ProductServices from './product.services'
 import ProductModel from '@src/models/product.model'
+import { InternalServerError } from '@src/core/exceptions'
 
 class DiscountServices {
   static Create = async function (input: TDiscountSchema) {
@@ -221,7 +222,86 @@ class DiscountServices {
     }
   }
 
-  static ComputeDiscountAmount = async function (discountIds: string[], productIds: string[]) {}
+  static ComputeDiscountAmount = async function (
+    buyerId: string,
+    discountId: string,
+    products: {
+      productId: string
+      quantity: number
+    }[]
+  ) {
+    const discount = await DiscountModel.findById(discountId)
+
+    if (!discount) {
+      throw new InternalServerError('discount is missing')
+    }
+
+    const { IsActive, EndDate, UsedCount, MaxUsage, UsedBuyers, MaxUsagesPerBuyer, MinOrderValue } =
+      discount
+
+    if (!IsActive) {
+      return new BadRequestResponse('cannot compute the discount amount - err #01')
+    }
+
+    if (EndDate <= new Date()) {
+      return new BadRequestResponse('cannot compute the discount amount - err #02')
+    }
+
+    if (MaxUsage && MaxUsage <= UsedCount) {
+      return new BadRequestResponse('cannot compute the discount amount - err #03')
+    }
+
+    let countUsagesBuyer = 0
+    UsedBuyers.forEach((UsedBuyer) => {
+      if (String(UsedBuyer) === buyerId) {
+        countUsagesBuyer++
+      }
+    })
+
+    if (MaxUsagesPerBuyer && MaxUsagesPerBuyer <= countUsagesBuyer) {
+      return new BadRequestResponse('cannot compute the discount amount - err #04')
+    }
+
+    let totalPay = 0
+
+    for (let i = 0; i < products.length; i++) {
+      const currentProduct = await ProductModel.findById(products[i].productId)
+
+      if (!currentProduct) {
+        throw new InternalServerError('cannot compute the discount amount - exception')
+      }
+
+      if (String(currentProduct.Seller) === String(discount.Seller)) {
+        if (
+          discount.AppliedType === DiscountAppliedType.Specific &&
+          !discount.AppliedProducts.includes(currentProduct._id)
+        ) {
+          return new BadRequestResponse('cannot compute the discount amount - err #05')
+        } else {
+          totalPay += products[i].quantity * currentProduct.ProductPrice
+        }
+      } else {
+        return new BadRequestResponse('cannot compute the discount amount - err #06')
+      }
+    }
+
+    if (MinOrderValue && MinOrderValue > totalPay) {
+      return new BadRequestResponse('cannot compute the discount amount - err #07')
+    }
+
+    let discountAmount = null
+    if (discount.DiscountType === DiscountType.FixedAmount) {
+      discountAmount = discount.DiscountValue
+    }
+
+    if (discount.DiscountType === DiscountType.Percentage) {
+      discountAmount = (totalPay * discount.DiscountValue) / 100
+    }
+
+    return new OkResponse({
+      discountAmount: discountAmount
+    })
+  }
 }
 
 export default DiscountServices

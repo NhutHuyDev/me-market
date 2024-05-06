@@ -1,5 +1,4 @@
-import { BadRequestResponse } from '@src/core/error.responses'
-import { InternalServerError } from '@src/core/exceptions'
+import { BadRequestResponse, NotFoundResponse } from '@src/core/error.responses'
 import { OkResponse } from '@src/core/success.responses'
 import CartModel from '@src/models/cart.model'
 import ProductModel from '@src/models/product.model'
@@ -9,9 +8,19 @@ class CartServices {
   static FindCart = async function (buyerId: string) {
     const cart = await CartModel.findOne({
       Buyer: buyerId
+    }).populate({
+      path: 'Products',
+      populate: {
+        path: 'Product',
+        populate: {
+          path: 'Seller'
+        }
+      }
     })
-      .populate('Products.Product')
-      .populate('Products.Seller')
+
+    if (!cart) {
+      return new NotFoundResponse('car is missing')
+    }
 
     return new OkResponse({
       cart: cart
@@ -49,7 +58,6 @@ class CartServices {
           $push: {
             Products: {
               Product: productId,
-              Seller: product.Seller,
               Quantity: quantity
             }
           }
@@ -66,7 +74,7 @@ class CartServices {
   static UpdateProductQuantity = async function (
     buyerId: string,
     productId: string,
-    newQuantity: number
+    quantity: number
   ) {
     const cart = await CartModel.findOneAndUpdate(
       {
@@ -74,9 +82,7 @@ class CartServices {
         'Products.Product': productId
       },
       {
-        $inc: {
-          'Products.$.Quantity': newQuantity
-        }
+        'Products.$.Quantity': quantity
       },
       { new: true }
     )
@@ -90,7 +96,29 @@ class CartServices {
     }
   }
 
-  static RemoveProducts = async function (productIds: string[]) {}
+  static RemoveProducts = async function (buyerId: string, productIds: string[]) {
+    const cart = await CartModel.findOneAndUpdate(
+      {
+        Buyer: buyerId
+      },
+      {
+        $pull: {
+          Products: {
+            Product: { $in: productIds }
+          }
+        }
+      },
+      { new: true }
+    )
+
+    if (cart) {
+      return new OkResponse({
+        cart: cart
+      })
+    } else {
+      return new BadRequestResponse('cannot remove product from the cart')
+    }
+  }
 }
 
 export default CartServices

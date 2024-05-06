@@ -5,12 +5,12 @@ export enum CartState {
   Inactive = 'Inactive'
 }
 
-export interface ICart {
+export type ICart = {
   CartState: string
   Buyer: Schema.Types.ObjectId
-  CountProduct: number
   Products: [
     {
+      Seller: Schema.Types.ObjectId
       productId: Schema.Types.ObjectId
       quantity: number
     }
@@ -28,14 +28,10 @@ const cartSchema = new Schema<ICart>(
       type: Schema.Types.ObjectId,
       ref: 'Users'
     },
-    CountProduct: {
-      type: Number,
-      default: 0
-    },
     Products: [
       {
-        Product: { type: Schema.Types.ObjectId, ref: 'Products' },
         Seller: { type: Schema.Types.ObjectId, ref: 'Users' },
+        Product: { type: Schema.Types.ObjectId, ref: 'Products' },
         Quantity: { type: Number }
       }
     ]

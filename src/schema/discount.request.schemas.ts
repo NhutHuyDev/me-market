@@ -74,5 +74,24 @@ export const DiscountQuerySchema = object({
   })
 })
 
+export const ComputeDiscountAmount = object({
+  body: object({
+    discountId: string().refine((discountId) => IsValidObjectId(discountId)),
+    products: array(
+      object({
+        productId: string().refine(
+          (productId) => IsValidObjectId(productId),
+          "product's id is not valid"
+        ),
+        quantity: number({
+          required_error: "product's quantity is required",
+          invalid_type_error: "product's quantity must be a positive integer"
+        }).min(1, "product's quantity must be a positive integer")
+      })
+    ).refine((products) => products.length, 'product is required')
+  })
+})
+
 export type TDiscountSchema = TypeOf<typeof DiscountSchema>['body']
 export type TDiscountQuerySchema = TypeOf<typeof DiscountQuerySchema>['query']
+export type TComputeDiscountAmount = TypeOf<typeof ComputeDiscountAmount>['body']

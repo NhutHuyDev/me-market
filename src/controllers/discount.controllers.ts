@@ -1,4 +1,8 @@
-import { TDiscountQuerySchema, TDiscountSchema } from '@src/schema/discount.request.schemas'
+import {
+  TComputeDiscountAmount,
+  TDiscountQuerySchema,
+  TDiscountSchema
+} from '@src/schema/discount.request.schemas'
 import DiscountServices from '@src/services/discount.services'
 import { Request, Response } from 'express'
 
@@ -42,6 +46,20 @@ class DiscountControllers {
     const queries = req.query
 
     const response = await DiscountServices.FindBySeller(sellerId, queries)
+    response.Send(res)
+  }
+
+  static ComputeDiscountAmountHandler = async function (
+    req: Request<object, object, TComputeDiscountAmount>,
+    res: Response
+  ) {
+    const buyer = res.locals.user
+
+    const buyerId = buyer._id
+    const discountId = req.body.discountId
+    const products = req.body.products
+
+    const response = await DiscountServices.ComputeDiscountAmount(buyerId, discountId, products)
     response.Send(res)
   }
 }

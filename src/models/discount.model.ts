@@ -21,7 +21,7 @@ export interface IDiscount {
   EndDate: Date
   MaxUsage: number | null
   UsedCount: number
-  ForCustomers: Schema.Types.ObjectId[]
+  UsedBuyers: Schema.Types.ObjectId[]
   MaxUsagesPerBuyer: number | null
   MinOrderValue: number | null
   Seller: Schema.Types.ObjectId
@@ -69,7 +69,7 @@ const discountSchema = new Schema<IDiscount>({
     type: Number,
     default: 0
   },
-  ForCustomers: [
+  UsedBuyers: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Users'
