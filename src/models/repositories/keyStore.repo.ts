@@ -10,7 +10,7 @@ class KeyStoreRepo {
     const privateKeyEncoding = Buffer.from(PrivateKey).toString('base64')
 
     return KeyStoreModel.create({
-      User: new mongoose.Types.ObjectId(userId),
+      User: userId,
       PublicKey: publicKeyEncoding,
       PrivateKey: privateKeyEncoding
     })

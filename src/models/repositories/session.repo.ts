@@ -1,6 +1,5 @@
-import { omit } from 'lodash'
-import { IUser } from '../user.model'
-import { Document, Schema } from 'mongoose'
+import { TUser } from '../user.model'
+import { Document } from 'mongoose'
 import { DecodeJwt, SignJwt } from '@src/helpers/jwt'
 import config from '@src/config'
 import SessionModel from '../session.model'
@@ -27,10 +26,10 @@ class SessionRepo {
   }
 
   static SignAccessToken = async function (
-    user: Document<unknown, object, IUser>,
+    user: Document<unknown, object, TUser>,
     signingKey: string
   ) {
-    const payload = omit(user.toJSON(), ['verified', 'deleted', '__v'])
+    const payload = user.toJSON()
 
     const accessToken = SignJwt(payload, signingKey, {
       expiresIn: config.app.access_token_expiration

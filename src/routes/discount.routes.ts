@@ -2,7 +2,7 @@ import DiscountControllers from '@src/controllers/discount.controllers'
 import HandleException from '@src/helpers/handleException'
 import RequireRoles from '@src/middlewares/requireRoles'
 import ValidateResource from '@src/middlewares/validateResourse'
-import { SystemRoles } from '@src/models/role.model'
+import { ESystemRoles } from '@src/models/role.model'
 import {
   ComputeDiscountAmount,
   DiscountQuerySchema,
@@ -12,7 +12,7 @@ import express from 'express'
 
 const router = express.Router()
 
-router.use(HandleException(RequireRoles([SystemRoles.Customer])))
+router.use(HandleException(RequireRoles([ESystemRoles.Buyer])))
 router.post(
   '/amount',
   ValidateResource(ComputeDiscountAmount),
@@ -23,7 +23,7 @@ router.post(
  * @description product features for sellers
  */
 
-router.use(HandleException(RequireRoles([SystemRoles.Seller])))
+router.use(HandleException(RequireRoles([ESystemRoles.Seller])))
 router.post(
   '/',
   ValidateResource(DiscountSchema),

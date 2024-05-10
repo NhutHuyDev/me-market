@@ -5,19 +5,20 @@ export enum CartState {
   Inactive = 'Inactive'
 }
 
-export type ICart = {
+export type TCart = {
+  _id: Schema.Types.ObjectId
   CartState: string
   Buyer: Schema.Types.ObjectId
-  Products: [
+  ProductItems: [
     {
       Seller: Schema.Types.ObjectId
-      productId: Schema.Types.ObjectId
-      quantity: number
+      ProductItem: Schema.Types.ObjectId
+      Quantity: number
     }
   ]
 }
 
-const cartSchema = new Schema<ICart>(
+const cartSchema = new Schema<TCart>(
   {
     CartState: {
       type: String,
@@ -26,21 +27,25 @@ const cartSchema = new Schema<ICart>(
     },
     Buyer: {
       type: Schema.Types.ObjectId,
-      ref: 'Users'
+      ref: 'Users',
+      required: true
     },
-    Products: [
-      {
-        Seller: { type: Schema.Types.ObjectId, ref: 'Users' },
-        Product: { type: Schema.Types.ObjectId, ref: 'Products' },
-        Quantity: { type: Number }
-      }
-    ]
+    ProductItems: {
+      type: [
+        {
+          Seller: { type: Schema.Types.ObjectId, ref: 'Users' },
+          Product: { type: Schema.Types.ObjectId, ref: 'Products' },
+          Quantity: { type: Number }
+        }
+      ],
+      required: true
+    }
   },
   {
     timestamps: true
   }
 )
 
-const CartModel = model<ICart>('Carts', cartSchema, 'Carts')
+const CartModel = model<TCart>('Carts', cartSchema, 'Carts')
 
 export default CartModel

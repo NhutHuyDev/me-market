@@ -1,4 +1,4 @@
-import jwt, { Jwt } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 
 export function SignJwt(object: object, signingKey: string, options?: jwt.SignOptions | undefined) {
   return jwt.sign(object, signingKey, {

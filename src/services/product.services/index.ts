@@ -4,8 +4,8 @@ import { Electronics } from './product.strategies/Electronics'
 import { Furnitures } from './product.strategies/Furniture'
 import CategoryModel from '@src/models/category.model'
 import { BadRequestResponse, UnauthorizedResponse } from '@src/core/error.responses'
-import { TProductQuerySchema, TProductSchema } from '@src/schema/product.request.schemas'
-import ProductModel from '@src/models/product.model'
+import { TProductQuerySchema } from '@src/schema/product.request.schemas'
+import ProductModel, { TProduct } from '@src/models/product.model'
 import { OkResponse } from '@src/core/success.responses'
 import InventoryModel from '@src/models/inventory.model'
 
@@ -16,22 +16,24 @@ class ProductServices {
     ProductServices.CategoryRegistry[categoryId] = strategy
   }
 
-  static Create = async function (input: TProductSchema) {
-    const category = String(input.ProductCategory)
+  static Create = async function (productInfo: Partial<TProduct>) {
+    const categoryCode = productInfo.ProductCategory
 
-    const existedCategory = await CategoryModel.findById(category)
+    const existedCategory = await CategoryModel.findOne({
+      CategoryCode: categoryCode
+    })
     if (!existedCategory) {
       return new BadRequestResponse('category is not supported')
     }
 
-    const productStrategy = ProductServices.CategoryRegistry[category]
-    const response: TProductStategyResponse = await productStrategy.Create(input)
+    const productStrategy = ProductServices.CategoryRegistry[existedCategory.CategoryCode]
+    const response: TProductStategyResponse = await productStrategy.Create(productInfo)
 
     if (response.success && response.product) {
       const inventory = await InventoryModel.create({
         InvenProduct: response.product._id,
         InvenSeller: response.product.Seller,
-        InvenStock: input.ProductQuantity
+        InvenStock: productInfo.ProductQuantity
       })
 
       return new OkResponse({
@@ -328,8 +330,8 @@ class ProductServices {
   }
 }
 
-ProductServices.RegisterCategory('clothes', new Clothes())
-ProductServices.RegisterCategory('electronics', new Electronics())
-ProductServices.RegisterCategory('furniture', new Furnitures())
+ProductServices.RegisterCategory('ca#001', new Electronics())
+ProductServices.RegisterCategory('ca#002', new Clothes())
+ProductServices.RegisterCategory('ca#003', new Furnitures())
 
 export default ProductServices

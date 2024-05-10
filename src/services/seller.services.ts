@@ -1,6 +1,6 @@
 import { BadRequestResponse } from '@src/core/error.responses'
 import { OkResponse } from '@src/core/success.responses'
-import { SystemRoles } from '@src/models/role.model'
+import { ESystemRoles } from '@src/models/role.model'
 import UserModel from '@src/models/user.model'
 
 class SellerServices {
@@ -11,7 +11,7 @@ class SellerServices {
       return new BadRequestResponse('user does not exist')
     }
 
-    currentUser.Roles.push(SystemRoles.Seller)
+    currentUser.Roles.push(ESystemRoles.Seller)
     await currentUser.save()
 
     return new OkResponse({

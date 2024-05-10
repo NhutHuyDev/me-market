@@ -1,4 +1,3 @@
-import { IUser } from '@src/models/user.model'
 import SellerServices from '@src/services/seller.services'
 import customHttpHeaders from '@src/utils/customHttpHeaders'
 import { Request, Response } from 'express'

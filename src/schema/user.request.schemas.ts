@@ -1,6 +1,6 @@
 import { TypeOf, object, string } from 'zod'
 
-export const RequestVerifyOtpSchema = object({
+export const RequestVerifyEmailSchema = object({
   body: object({
     email: string({
       required_error: 'email is required'
@@ -8,7 +8,7 @@ export const RequestVerifyOtpSchema = object({
   })
 })
 
-export const VerifyUserSchema = object({
+export const VerifyEmailSchema = object({
   body: object({
     email: string({
       required_error: 'email is required'
@@ -25,7 +25,7 @@ export const CreateUserSchema = object({
       required_error: 'email is required'
     }).email('email is not valid'),
 
-    mobile: string({
+    mobilePhone: string({
       required_error: 'mobile phone is required'
     }).regex(/(0[3|5|7|8|9])+([0-9]{8})\b/g, 'mobile phone must have 10 digits, start with 0'),
 
@@ -53,8 +53,8 @@ export const CreateUserSchema = object({
   })
 })
 
-export type TRequestVerifyOtpSchema = TypeOf<typeof RequestVerifyOtpSchema>['body']
+export type TRequestVerifyEmailSchema = TypeOf<typeof RequestVerifyEmailSchema>['body']
 
-export type TVerifyUserSchema = TypeOf<typeof VerifyUserSchema>['body']
+export type TVerifyEmailSchema = TypeOf<typeof VerifyEmailSchema>['body']
 
 export type TCreateUserSchema = TypeOf<typeof CreateUserSchema>['body']

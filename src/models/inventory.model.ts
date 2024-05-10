@@ -1,15 +1,15 @@
 import { Schema, model } from 'mongoose'
 
-export interface IInventory {
+export type TInventory = {
   _id: Schema.Types.ObjectId
   InvenProduct: Schema.Types.ObjectId
   InvenLocation: string
   InvenStock: number
-  InvenSeller: Schema.Types.ObjectId
-  InvenReservations?: Schema.Types.ObjectId[]
+  Seller: Schema.Types.ObjectId
+  // InvenReservations?: Schema.Types.ObjectId[]
 }
 
-const inventorySchema = new Schema<IInventory>(
+const inventorySchema = new Schema<TInventory>(
   {
     InvenProduct: {
       type: Schema.Types.ObjectId,
@@ -23,9 +23,10 @@ const inventorySchema = new Schema<IInventory>(
       type: Number,
       required: true
     },
-    InvenSeller: {
+    Seller: {
       type: Schema.Types.ObjectId,
-      ref: 'Users'
+      ref: 'Users',
+      required: true
     }
   },
   {
@@ -33,6 +34,6 @@ const inventorySchema = new Schema<IInventory>(
   }
 )
 
-const InventoryModel = model<IInventory>('Inventories', inventorySchema, 'Inventories')
+const InventoryModel = model<TInventory>('Inventories', inventorySchema, 'Inventories')
 
 export default InventoryModel

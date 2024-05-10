@@ -1,34 +1,38 @@
-import RegisterOtpModel from '../registerOtp.model'
+import OtpKeyModel, { EVerifyType } from '../otpKey.model'
 
-class RegisterOtpRepo {
+class OtpKeyRepo {
   static FindByEmail = (email: string) => {
-    return RegisterOtpModel.findOne({
-      Email: email
+    return OtpKeyModel.findOne({
+      VerifyType: EVerifyType.Email,
+      VerifyInfo: email
     })
   }
 
   static FindValidByEmail = (email: string) => {
-    return RegisterOtpModel.findOne({
-      Email: email,
+    return OtpKeyModel.findOne({
+      VerifyType: EVerifyType.Email,
+      VerifyInfo: email,
       CurrentOtp: { $ne: null },
       ExpiredAt: { $ne: null, $gt: new Date() }
     })
   }
 
-  static Create = async function (email: string) {
-    return RegisterOtpModel.create({
-      Email: email
+  static Create = async function (verifyType: EVerifyType, verifyInfo: string) {
+    return OtpKeyModel.create({
+      VerifyType: verifyType,
+      VerifyInfo: verifyInfo
     })
   }
 
   static IsValidEmail = async (email: string) => {
-    const validEmail = await RegisterOtpModel.findOne({
-      Email: email,
-      Verified: true
+    const validEmail = await OtpKeyModel.findOne({
+      VerifyType: EVerifyType.Email,
+      VerifyInfo: email,
+      IsVerified: true
     })
 
     return validEmail ? true : false
   }
 }
 
-export default RegisterOtpRepo
+export default OtpKeyRepo

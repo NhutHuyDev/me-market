@@ -1,11 +1,11 @@
 [
     {
-        "RoleName": "Super Admin"
+        "RoleTitle": "Super Admin"
     },
     {
-        "RoleName": "Shop"
+        "RoleTitle": "Seller"
     },
     {
-        "RoleName": "Customer"
+        "RoleTitle": "Buyer"
     }
 ]

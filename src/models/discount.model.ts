@@ -10,7 +10,7 @@ export enum DiscountAppliedType {
   Specific = 'Specific'
 }
 
-export interface IDiscount {
+export type TDiscount = {
   _id: Schema.Types.ObjectId
   DiscountCode: string
   DiscountName: string
@@ -25,12 +25,12 @@ export interface IDiscount {
   MaxUsagesPerBuyer: number | null
   MinOrderValue: number | null
   Seller: Schema.Types.ObjectId
-  IsActive: boolean
   AppliedType: DiscountAppliedType
   AppliedProducts: Schema.Types.ObjectId[]
+  IsActive: boolean
 }
 
-const discountSchema = new Schema<IDiscount>({
+const discountSchema = new Schema<TDiscount>({
   DiscountCode: {
     type: String,
     unique: true,
@@ -69,12 +69,15 @@ const discountSchema = new Schema<IDiscount>({
     type: Number,
     default: 0
   },
-  UsedBuyers: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Users'
-    }
-  ],
+  UsedBuyers: {
+    type: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Users'
+      }
+    ],
+    default: []
+  },
   MaxUsagesPerBuyer: {
     type: Number,
     default: null
@@ -85,23 +88,26 @@ const discountSchema = new Schema<IDiscount>({
   },
   Seller: {
     type: Schema.Types.ObjectId,
-    ref: 'Users'
-  },
-  IsActive: {
-    type: Boolean,
-    default: false
+    ref: 'Users',
+    required: true
   },
   AppliedType: {
     type: String,
     enum: Object.values(DiscountAppliedType)
   },
-  AppliedProducts: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Products',
-      default: []
-    }
-  ]
+  AppliedProducts: {
+    type: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Products'
+      }
+    ],
+    default: []
+  },
+  IsActive: {
+    type: Boolean,
+    default: false
+  }
 })
 
 discountSchema.index({
@@ -109,6 +115,6 @@ discountSchema.index({
   DiscountDescription: 'text'
 })
 
-const DiscountModel = model<IDiscount>('Discounts', discountSchema, 'Discounts')
+const DiscountModel = model<TDiscount>('Discounts', discountSchema, 'Discounts')
 
 export default DiscountModel

@@ -1,24 +1,25 @@
 import { model, Schema } from 'mongoose'
 
-export enum SystemRoles {
+export enum ESystemRoles {
   SuperAdmin = 'Super Admin',
   Seller = 'Seller',
-  Customer = 'Customer'
+  Buyer = 'Buyer'
 }
 
-export interface IRole {
-  RoleName: SystemRoles
+export type TRole = {
+  _id: Schema.Types.ObjectId
+  RoleTitle: ESystemRoles
 }
 
-const roleSchema = new Schema<IRole>({
-  RoleName: {
+const roleSchema = new Schema<TRole>({
+  RoleTitle: {
     type: String,
-    enum: Object.values(SystemRoles),
+    enum: Object.values(ESystemRoles),
     unique: true,
     required: true
   }
 })
 
-const RoleModel = model<IRole>('Roles', roleSchema, 'Roles')
+const RoleModel = model<TRole>('Roles', roleSchema, 'Roles')
 
 export default RoleModel

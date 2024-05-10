@@ -2,11 +2,12 @@ import ProductControllers from '@src/controllers/product.controllers'
 import HandleException from '@src/helpers/handleException'
 import RequireRoles from '@src/middlewares/requireRoles'
 import ValidateResource from '@src/middlewares/validateResourse'
-import { SystemRoles } from '@src/models/role.model'
+import { ESystemRoles } from '@src/models/role.model'
 import {
   ProductParamsSchema,
   ProductQuerySchema,
-  ProductSchema,
+  AddProductSchema,
+  UpdateProductSchema,
   PublishProductSchema
 } from '@src/schema/product.request.schemas'
 import express from 'express'
@@ -29,12 +30,16 @@ router.get(
  * @description product features for sellers
  */
 
-router.use(HandleException(RequireRoles([SystemRoles.Seller])))
-router.post('/', ValidateResource(ProductSchema), HandleException(ProductControllers.CreateHandler))
+router.use(HandleException(RequireRoles([ESystemRoles.Seller])))
+router.post(
+  '/',
+  ValidateResource(AddProductSchema),
+  HandleException(ProductControllers.CreateHandler)
+)
 
 router.patch(
   '/',
-  ValidateResource(ProductSchema),
+  ValidateResource(UpdateProductSchema),
   HandleException(ProductControllers.UpdateHandler)
 )
 

@@ -1,13 +1,14 @@
 import { TypeOf, object, string } from 'zod'
 import IProductStategy, { TProductStategyResponse } from './IProductStategy'
-import { TProductSchema } from '@src/schema/product.request.schemas'
-import ProductModel, { IProduct } from '@src/models/product.model'
+import ProductModel, { TProduct } from '@src/models/product.model'
 import { ValidateSchema } from '@src/utils/validateSchema'
 import slugify from 'slugify'
 
 export class Clothes implements IProductStategy {
-  async Create(input: TProductSchema & TAttributeClothesSchema): Promise<TProductStategyResponse> {
-    const validateResult = ValidateSchema(AttributeClothesSchema, { body: input })
+  async Create(
+    productInfo: Partial<TProduct> & TAttributeClothesSchema
+  ): Promise<TProductStategyResponse> {
+    const validateResult = ValidateSchema(AttributeClothesSchema, { body: productInfo })
 
     if (!validateResult.IsValid && validateResult.Message) {
       return {
@@ -17,13 +18,13 @@ export class Clothes implements IProductStategy {
     }
 
     const ProductAttributes = [
-      { code: 'Brand', value: input.ProductAttributes?.Brand, name: 'Brand' },
-      { code: 'Size', value: input.ProductAttributes?.Size, name: 'Size' },
-      { code: 'Material', value: input.ProductAttributes?.Material, name: 'Material' }
+      { code: 'brand', value: productInfo.productAttributes.brand, name: 'Brand' },
+      { code: 'size', value: productInfo.productAttributes.size, name: 'Size' },
+      { code: 'material', value: productInfo.productAttributes.material, name: 'Material' }
     ]
 
     const newProduct = await ProductModel.create({
-      ...input,
+      ...productInfo,
       ProductAttributes: ProductAttributes
     })
 
@@ -46,9 +47,9 @@ export class Clothes implements IProductStategy {
     input.ProductSlug = slugify(input.ProductName)
 
     const ProductAttributes = [
-      { code: 'Brand', value: input.ProductAttributes?.Brand, name: 'Brand' },
-      { code: 'Size', value: input.ProductAttributes?.Size, name: 'Size' },
-      { code: 'Material', value: input.ProductAttributes?.Material, name: 'Material' }
+      { code: 'brand', value: input.ProductAttributes.Brand, name: 'brand' },
+      { code: 'size', value: input.ProductAttributes.Size, name: 'Size' },
+      { code: 'material', value: input.ProductAttributes.Material, name: 'Material' }
     ]
 
     const updatedProduct = await ProductModel.findOneAndUpdate(
@@ -81,15 +82,15 @@ export class Clothes implements IProductStategy {
 
 const AttributeClothesSchema = object({
   body: object({
-    ProductAttributes: object(
+    productAttributes: object(
       {
-        Brand: string({
+        brand: string({
           required_error: "clothes's brand is required"
         }),
-        Size: string({
+        size: string({
           required_error: "clothes's size is required"
         }),
-        Material: string({
+        material: string({
           required_error: "clothes's material is required"
         })
       },

@@ -3,23 +3,23 @@ import HandleException from '@src/helpers/handleException'
 import ValidateResource from '@src/middlewares/validateResourse'
 import {
   CreateUserSchema,
-  RequestVerifyOtpSchema,
-  VerifyUserSchema
+  RequestVerifyEmailSchema,
+  VerifyEmailSchema
 } from '@src/schema/user.request.schemas'
 import express from 'express'
 
 const router = express.Router()
 
 router.post(
-  '/request-otp',
-  ValidateResource(RequestVerifyOtpSchema),
-  HandleException(UserControllers.RequestVerifyOtpHandler)
+  '/request-verify-email',
+  ValidateResource(RequestVerifyEmailSchema),
+  HandleException(UserControllers.RequestVerifyEmailHandler)
 )
 
 router.post(
-  '/verify',
-  ValidateResource(VerifyUserSchema),
-  HandleException(UserControllers.VerifyUserHandler)
+  '/verify-email',
+  ValidateResource(VerifyEmailSchema),
+  HandleException(UserControllers.VerifyEmailHandler)
 )
 
 router.post(

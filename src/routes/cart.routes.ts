@@ -2,7 +2,7 @@ import CartControllers from '@src/controllers/cart.controllers'
 import HandleException from '@src/helpers/handleException'
 import RequireRoles from '@src/middlewares/requireRoles'
 import ValidateResource from '@src/middlewares/validateResourse'
-import { SystemRoles } from '@src/models/role.model'
+import { ESystemRoles } from '@src/models/role.model'
 import {
   AddToCartSchema,
   RemoveProductsSchema,
@@ -12,7 +12,7 @@ import express from 'express'
 
 const router = express.Router()
 
-router.use(HandleException(RequireRoles([SystemRoles.Customer])))
+router.use(HandleException(RequireRoles([ESystemRoles.Buyer])))
 router.get('/', HandleException(CartControllers.FindCart))
 router.post('/', ValidateResource(AddToCartSchema), HandleException(CartControllers.AddToCart))
 router.patch(

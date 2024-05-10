@@ -1,5 +1,3 @@
-import { InternalServerError } from '@src/core/exceptions'
-import RegisterOtpRepo from '@src/models/repositories/registerOtp.repo'
 import UserRepo from '@src/models/repositories/user.repo'
 import sendEmail from '@src/utils/mailer'
 import path from 'path'
@@ -8,19 +6,20 @@ import UserModel from '@src/models/user.model'
 import { TCreateUserSchema } from '@src/schema/user.request.schemas'
 import KeyStoreRepo from '@src/models/repositories/keyStore.repo'
 import CredentialModel from '@src/models/credential.model'
-import { SystemRoles } from '@src/models/role.model'
 import { BadRequestResponse, ConflictResponse } from '@src/core/error.responses'
 import { CreatedResponse, OkResponse } from '@src/core/success.responses'
 import CartModel from '@src/models/cart.model'
+import { EVerifyType } from '@src/models/otpKey.model'
+import OtpKeyRepo from '@src/models/repositories/registerOtp.repo'
 
 class UserServices {
-  static RequestVerifyOtp = async function (email: string) {
+  static RequestVerifyEmail = async function (email: string) {
     /**
      * @description 1. kiểm tra email đang được user nào sử dụng chưa
      */
     const existingUser = await UserRepo.FindByEmail(email)
 
-    if (existingUser && existingUser.Verified) {
+    if (existingUser && existingUser.IsVerified) {
       return new ConflictResponse('email is already in use. Please use another email!')
     }
 
@@ -31,9 +30,9 @@ class UserServices {
      */
     let newOtp = null
 
-    const existingRequest = await RegisterOtpRepo.FindByEmail(email)
+    const existingRequest = await OtpKeyRepo.FindByEmail(email)
     if (!existingRequest) {
-      const registerOtp = await RegisterOtpRepo.Create(email)
+      const registerOtp = await OtpKeyRepo.Create(EVerifyType.Email, email)
       newOtp = registerOtp.GenerateOtp()
       registerOtp.save()
     } else {
@@ -66,11 +65,11 @@ class UserServices {
     })
   }
 
-  static VerifyUser = async function (email: string, candidateOtp: string) {
+  static VerifyEmail = async function (email: string, candidateOtp: string) {
     /**
      * @description 1. kiểm tra có tồn tại yêu cầu xác thực cho email hiện tại hay không
      */
-    const existingValidOtp = await RegisterOtpRepo.FindValidByEmail(email)
+    const existingValidOtp = await OtpKeyRepo.FindValidByEmail(email)
     if (!existingValidOtp) {
       return new BadRequestResponse('email or otp is not valid')
     }
@@ -80,7 +79,7 @@ class UserServices {
      */
     if (await existingValidOtp.ValidateOtp(candidateOtp)) {
       existingValidOtp.CurrentOtp = null
-      existingValidOtp.Verified = true
+      existingValidOtp.IsVerified = true
 
       await existingValidOtp.save()
 
@@ -97,7 +96,7 @@ class UserServices {
     /**
      * @description 1. kiểm tra email đã được xác thực chưa
      */
-    const isValidEmail = await RegisterOtpRepo.IsValidEmail(input.email)
+    const isValidEmail = await OtpKeyRepo.IsValidEmail(input.email)
 
     if (!isValidEmail) {
       return new BadRequestResponse('email is not verified')
@@ -118,9 +117,7 @@ class UserServices {
       Email: input.email,
       FirstName: input.firstName,
       LastName: input.lastName,
-      Mobile: input.mobile,
-      Avatar: '/cloud/assets/img/default-customer-avatar.svg',
-      Roles: [SystemRoles.Customer]
+      MobilePhone: input.mobilePhone
     })
 
     /**

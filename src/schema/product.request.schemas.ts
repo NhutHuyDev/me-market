@@ -1,14 +1,34 @@
 import { IsValidObjectId } from '@src/utils/mongo.utils'
-import { TypeOf, coerce, number, object, string, z } from 'zod'
+import { TypeOf, any, coerce, number, object, string, z } from 'zod'
 
-export const ProductSchema = object({
+export const AddProductSchema = object({
   body: object({
-    ProductId: string().optional(),
+    productName: string({
+      required_error: "product's name is required"
+    }),
+    productDescription: string({
+      required_error: "product's description is required"
+    }),
+    productQuantity: number({
+      invalid_type_error: "product's quantity is a integer",
+      required_error: "product's quantity is required"
+    }).min(1, "product's quantity has to be greater than 0"),
+    productPrice: number({
+      required_error: "product's price is required"
+    }),
+    productCategoryCode: string({
+      required_error: "product's category is required"
+    }),
+    productAttributes: any()
+  })
+})
+
+export const UpdateProductSchema = object({
+  body: object({
+    ProductId: string(),
     ProductName: string({
       required_error: "product's name is required"
     }),
-    ProductSlug: string().optional(),
-    ProductThumb: string().optional(),
     ProductDescription: string({
       required_error: "product's description is required"
     }),
@@ -19,11 +39,11 @@ export const ProductSchema = object({
     ProductPrice: number({
       required_error: "product's price is required"
     }),
-    Seller: string().optional(),
     ProductCategory: string({
       required_error: "product's category is required"
-    })
-  }).refine((data) => !data.ProductId || IsValidObjectId(data.ProductId), {
+    }),
+    ProductAttributes: any()
+  }).refine((data) => IsValidObjectId(data.ProductId), {
     message: "product's id is not valid"
   })
 })
@@ -70,7 +90,8 @@ export const ProductParamsSchema = object({
   })
 })
 
-export type TProductSchema = TypeOf<typeof ProductSchema>['body']
+export type TAddProductSchema = TypeOf<typeof AddProductSchema>['body']
+export type TUpdateProductSchema = TypeOf<typeof UpdateProductSchema>['body']
 export type TPublishProductSchema = TypeOf<typeof PublishProductSchema>['body']
 export type TProductQuerySchema = TypeOf<typeof ProductQuerySchema>['query']
 export type TProductParamsSchema = TypeOf<typeof ProductParamsSchema>['params']

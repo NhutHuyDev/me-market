@@ -1,10 +1,10 @@
-import { InternalServerError } from '@src/core/exceptions'
 import path from 'path'
 import fs from 'fs'
 import UserRepo from '@src/models/repositories/user.repo'
 import CredentialRepo from '@src/models/repositories/credential.repo'
 import sendEmail from '@src/utils/mailer'
 import { BadRequestResponse, InternalServerResponse } from '@src/core/error.responses'
+import { OkResponse } from '@src/core/success.responses'
 
 class CredentialServices {
   static RequestResetPassword = async function (email: string) {
@@ -13,7 +13,7 @@ class CredentialServices {
      */
     const user = await UserRepo.FindByEmail(email)
     if (!user) {
-      throw new BadRequestResponse("email doesn't exist, please create your account")
+      return new BadRequestResponse("email doesn't exist, please create your account")
     }
 
     /**
@@ -53,10 +53,11 @@ class CredentialServices {
       html: html
     })
     console.log(`Verify OTP sent to ${email}`)
-    return {
+
+    return new OkResponse({
       email: email,
       message: `access your email - ${email} to get reset password code`
-    }
+    })
   }
 
   static ResetPassword = async function (
@@ -75,7 +76,7 @@ class CredentialServices {
      * @description 2. kiểm tra password reset code có tồn tại trong database hay không
      */
     if (!userCredential.PasswordResetCode) {
-      throw new BadRequestResponse('could not reset user password')
+      return new BadRequestResponse('could not reset user password')
     }
 
     /**
@@ -87,12 +88,12 @@ class CredentialServices {
       userCredential.CredPassword = newPassword
       await userCredential.save()
 
-      return {
-        message: 'successfully updated user password'
-      }
+      return new OkResponse({
+        message: "successfully updated user's password"
+      })
     }
 
-    throw new BadRequestResponse('could not reset user password')
+    return new BadRequestResponse('could not reset user password')
   }
 }
 

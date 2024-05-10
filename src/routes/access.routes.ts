@@ -2,7 +2,7 @@ import AccessControllers from '@src/controllers/access.controllers'
 import HandleException from '@src/helpers/handleException'
 import RequireRoles from '@src/middlewares/requireRoles'
 import ValidateResource from '@src/middlewares/validateResourse'
-import { SystemRoles } from '@src/models/role.model'
+import { ESystemRoles } from '@src/models/role.model'
 import { SignInSchema } from '@src/schema/access.request.schemas'
 import express from 'express'
 
@@ -16,7 +16,7 @@ router.post(
 
 router.post('/refresh', HandleException(AccessControllers.RefreshAccessTokenHandler))
 
-router.use(HandleException(RequireRoles([SystemRoles.Customer])))
+router.use(HandleException(RequireRoles([ESystemRoles.Buyer])))
 
 router.post('/sign-out', HandleException(AccessControllers.SignOutHandler))
 

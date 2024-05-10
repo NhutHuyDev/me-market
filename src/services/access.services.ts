@@ -109,7 +109,7 @@ class AccessServices {
      */
     currentSession.Available = false
 
-    currentSession.save()
+    await currentSession.save()
 
     return new OkResponse({
       message: 'sign out successfully'

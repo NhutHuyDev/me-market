@@ -1,29 +1,40 @@
+import { TProduct } from '@src/models/product.model'
+import { TUser } from '@src/models/user.model'
 import {
+  TAddProductSchema,
   TProductParamsSchema,
   TProductQuerySchema,
-  TProductSchema,
-  TPublishProductSchema
+  TPublishProductSchema,
+  TUpdateProductSchema
 } from '@src/schema/product.request.schemas'
 import ProductServices from '@src/services/product.services'
 import { Request, Response } from 'express'
 
 class ProductControllers {
   static CreateHandler = async function (
-    req: Request<object, object, TProductSchema>,
+    req: Request<object, object, TAddProductSchema>,
     res: Response
   ) {
-    const input = req.body
+    const { productName, productDescription, productPrice, productQuantity, productCategoryCode } =
+      req.body
 
-    const User = res.locals.user
+    const User = res.locals.user as TUser
 
-    input.Seller = User._id
+    const productInfo: Partial<TProduct> = {
+      ProductName: productName,
+      ProductDescription: productDescription,
+      ProductPrice: productPrice,
+      ProductQuantity: productQuantity,
+      ProductCategory: productCategoryCode,
+      Seller: User._id
+    }
 
-    const response = await ProductServices.Create(input)
+    const response = await ProductServices.Create(productInfo)
     response.Send(res)
   }
 
   static UpdateHandler = async function (
-    req: Request<object, object, TProductSchema>,
+    req: Request<object, object, TUpdateProductSchema>,
     res: Response
   ) {
     const input = req.body

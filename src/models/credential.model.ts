@@ -2,7 +2,7 @@ import { Model, model, Schema } from 'mongoose'
 import argon2 from 'argon2'
 import { nanoid } from 'nanoid'
 
-export interface ICredential {
+export type TCredential = {
   User: Schema.Types.ObjectId
   CredLogin: string
   CredPassword: string
@@ -10,15 +10,15 @@ export interface ICredential {
   PasswordResetExpires?: Date | null
 }
 
-interface ICredentialMethods {
+type TCredentialMethods = {
   ValidatePassword(CandidatePassword: string): Promise<string>
   GeneratePasswordResetCode(): string
   ValidatePasswordResetCode(CandidatePassword: string): Promise<string>
 }
 
-type TCredentialModel = Model<ICredential, object, ICredentialMethods>
+type TCredentialModel = Model<TCredential, object, TCredentialMethods>
 
-const credentialSchema = new Schema<ICredential, TCredentialModel, ICredentialMethods>({
+const credentialSchema = new Schema<TCredential, TCredentialModel, TCredentialMethods>({
   User: { type: Schema.Types.ObjectId, ref: 'Users' },
   CredLogin: { type: String, required: true, unique: true },
   CredPassword: { type: String, required: true },
@@ -62,7 +62,7 @@ credentialSchema.method(
   }
 )
 
-const CredentialModel = model<ICredential, TCredentialModel>(
+const CredentialModel = model<TCredential, TCredentialModel>(
   'Credentials',
   credentialSchema,
   'Credentials'
