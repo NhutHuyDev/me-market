@@ -10,6 +10,7 @@ import ProductRoutes from './product.routes'
 import DiscountRoutes from './discount.routes'
 
 import ProductAttributeRoutes from './productAttribute.routes'
+import CategoryRoutes from './category.routes'
 
 import { NotFoundError } from '@src/core/exceptions'
 import handleException from '@src/helpers/handleException'
@@ -47,6 +48,7 @@ router.use('/v1/api/discounts', DiscountRoutes)
  * @description super admin features
  */
 router.use('/v1/api/product-attributes', ProductAttributeRoutes)
+router.use('/v1/api/categories', CategoryRoutes)
 
 /**
  * @description 404 handling

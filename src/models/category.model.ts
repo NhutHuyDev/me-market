@@ -1,6 +1,7 @@
 import { model, Schema } from 'mongoose'
 
 export type TCategory = {
+  _id: Schema.Types.ObjectId
   CategoryCode: string
   CategoryTitle: string
   CategoryParent: string | null
@@ -20,17 +21,8 @@ const categorySchema = new Schema<TCategory>({
     required: true
   },
   CategoryParent: {
-    type: String,
+    type: Schema.Types.ObjectId,
     ref: 'Categories',
-    default: null
-  },
-  CategoryChildren: {
-    type: [
-      {
-        type: String,
-        ref: 'Categories'
-      }
-    ],
     default: null
   },
   RequiredAttributes: {
