@@ -29,7 +29,7 @@ const productSchema = new Schema<TProduct>(
     ProductAttributes: {
       type: [
         {
-          AttributeTitle: { type: String, required: true },
+          Attribute: { type: String, required: true },
           Value: { type: String, required: true }
         }
       ],

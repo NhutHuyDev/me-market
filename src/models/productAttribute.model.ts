@@ -3,19 +3,29 @@ import { model, Schema } from 'mongoose'
 export type TProductAttribute = {
   _id: Schema.Types.ObjectId
   AttributeTitle: string
+  AttributeDescription: string
 }
 
 const productAttributeSchema = new Schema<TProductAttribute>({
   AttributeTitle: {
     type: String,
-    required: true
+    required: true,
+    unique: true
+  },
+  AttributeDescription: {
+    type: String
   }
 })
 
-const CategoryModel = model<TProductAttribute>(
+productAttributeSchema.index({
+  AttributeTitle: 'text',
+  AttributeDescription: 'text'
+})
+
+const ProductAttributeModel = model<TProductAttribute>(
   'ProductAttributes',
   productAttributeSchema,
   'ProductAttributes'
 )
 
-export default CategoryModel
+export default ProductAttributeModel

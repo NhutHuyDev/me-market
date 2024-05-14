@@ -13,7 +13,7 @@ class CartServices {
     })
 
     if (!cart) {
-      return new InternalServerError('cart is missing')
+      throw new InternalServerError('cart is missing')
     }
 
     /*

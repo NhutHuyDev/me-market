@@ -9,6 +9,8 @@ import SellerRoutes from './seller.routes'
 import ProductRoutes from './product.routes'
 import DiscountRoutes from './discount.routes'
 
+import ProductAttributeRoutes from './productAttribute.routes'
+
 import { NotFoundError } from '@src/core/exceptions'
 import handleException from '@src/helpers/handleException'
 import DeserializeUser from '../middlewares/deserializeUser'
@@ -40,6 +42,11 @@ router.use('/v1/api/carts', CartRoutes)
 router.use('/v1/api/seller', SellerRoutes)
 router.use('/v1/api/products', ProductRoutes)
 router.use('/v1/api/discounts', DiscountRoutes)
+
+/**
+ * @description super admin features
+ */
+router.use('/v1/api/product-attributes', ProductAttributeRoutes)
 
 /**
  * @description 404 handling

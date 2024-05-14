@@ -4,8 +4,9 @@ export type TCategory = {
   CategoryCode: string
   CategoryTitle: string
   CategoryParent: string | null
-  CategoryChildren: string[]
+  CategoryChildren: string[] | null
   RequiredAttributes: Schema.Types.ObjectId[]
+  OptionalAttributes: Schema.Types.ObjectId[]
 }
 
 const categorySchema = new Schema<TCategory>({
@@ -20,7 +21,8 @@ const categorySchema = new Schema<TCategory>({
   },
   CategoryParent: {
     type: String,
-    ref: 'Categories'
+    ref: 'Categories',
+    default: null
   },
   CategoryChildren: {
     type: [
@@ -29,9 +31,18 @@ const categorySchema = new Schema<TCategory>({
         ref: 'Categories'
       }
     ],
-    default: []
+    default: null
   },
   RequiredAttributes: {
+    type: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'ProductAttributes'
+      }
+    ],
+    default: []
+  },
+  OptionalAttributes: {
     type: [
       {
         type: Schema.Types.ObjectId,
