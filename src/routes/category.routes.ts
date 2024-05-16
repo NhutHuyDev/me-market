@@ -7,6 +7,7 @@ import {
   AddCategorySchema,
   CategoryQuerySchema,
   DeleteCategorySchema,
+  GetDetailCategorySchema,
   UpdateCategorySchema
 } from '@src/schema/category.request.schemas'
 import express from 'express'
@@ -19,6 +20,12 @@ router.get(
   '/',
   ValidateResource(CategoryQuerySchema),
   HandleException(CategoryControllers.FindHandler)
+)
+
+router.get(
+  '/:categoryId',
+  ValidateResource(GetDetailCategorySchema),
+  HandleException(CategoryControllers.GetDetailHandler)
 )
 
 router.post(

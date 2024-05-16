@@ -1,5 +1,5 @@
 import { IsValidObjectId } from '@src/utils/mongo.utils'
-import { TypeOf, any, coerce, number, object, string, z } from 'zod'
+import { TypeOf, any, array, coerce, number, object, string, z } from 'zod'
 
 export const AddProductSchema = object({
   body: object({
@@ -9,6 +9,7 @@ export const AddProductSchema = object({
     productDescription: string({
       required_error: "product's description is required"
     }),
+    productThumb: string().optional(),
     productQuantity: number({
       invalid_type_error: "product's quantity is a integer",
       required_error: "product's quantity is required"
@@ -16,10 +17,20 @@ export const AddProductSchema = object({
     productPrice: number({
       required_error: "product's price is required"
     }),
+    seller: string().optional(),
     productCategoryCode: string({
       required_error: "product's category is required"
     }),
-    productAttributes: any()
+    productAttributes: array(
+      object({
+        productAttributeId: string(),
+        value: string()
+      })
+    ).refine((productAttributes) =>
+      productAttributes.every((productAttribute) =>
+        IsValidObjectId(productAttribute.productAttributeId)
+      )
+    )
   })
 })
 

@@ -49,6 +49,22 @@ class CategoryServices {
       nextPage: page * 1 + 1 == numPages ? page * 1 + 1 : null
     })
   }
+
+  static GetDetail = async (categoryId: string) => {
+    const category = await CategoryModel.findById(categoryId).populate([
+      {
+        path: 'RequiredAttributes'
+      },
+      {
+        path: 'OptionalAttributes'
+      }
+    ])
+
+    return new OkResponse({
+      category: category
+    })
+  }
+
   static Create = async (categoryInfo: TAddCategorySchema) => {
     const { categoryCode, categoryTitle, categoryParent, requiredAttributes, optionalAttributes } =
       categoryInfo
@@ -100,6 +116,7 @@ class CategoryServices {
       newCategory: newCategory
     })
   }
+
   static Update = async (categoryInfo: TUpdateCategorySchema) => {
     const {
       categoryId,
@@ -167,6 +184,7 @@ class CategoryServices {
       })
     }
   }
+
   static Delete = async (categoryId: string) => {
     const deletedCategory = await CategoryModel.findByIdAndDelete(categoryId)
 

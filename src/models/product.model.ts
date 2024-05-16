@@ -29,7 +29,7 @@ const productSchema = new Schema<TProduct>(
     ProductAttributes: {
       type: [
         {
-          Attribute: { type: String, required: true },
+          Attribute: { type: Schema.Types.ObjectId, ref: 'ProductAttributes', required: true },
           Value: { type: String, required: true }
         }
       ],

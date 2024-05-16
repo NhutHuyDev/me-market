@@ -1,51 +1,92 @@
-import IProductStategy, { TProductStategyResponse } from './product.strategies/IProductStategy'
-import { Clothes } from './product.strategies/Clothes'
-import { Electronics } from './product.strategies/Electronics'
-import { Furnitures } from './product.strategies/Furniture'
 import CategoryModel from '@src/models/category.model'
 import { BadRequestResponse, UnauthorizedResponse } from '@src/core/error.responses'
-import { TProductQuerySchema } from '@src/schema/product.request.schemas'
+import { TAddProductSchema, TProductQuerySchema } from '@src/schema/product.request.schemas'
 import ProductModel, { TProduct } from '@src/models/product.model'
 import { OkResponse } from '@src/core/success.responses'
 import InventoryModel from '@src/models/inventory.model'
 
 class ProductServices {
-  static CategoryRegistry: { [key: string]: IProductStategy } = {}
-
-  static RegisterCategory(categoryId: string, strategy: IProductStategy) {
-    ProductServices.CategoryRegistry[categoryId] = strategy
-  }
-
-  static Create = async function (productInfo: Partial<TProduct>) {
-    const categoryCode = productInfo.ProductCategory
+  static Create = async function (productInfo: TAddProductSchema) {
+    const {
+      productName,
+      productDescription,
+      productThumb,
+      productQuantity,
+      productPrice,
+      productCategoryCode,
+      productAttributes,
+      seller
+    } = productInfo
 
     const existedCategory = await CategoryModel.findOne({
-      CategoryCode: categoryCode
+      CategoryCode: productCategoryCode
     })
+
     if (!existedCategory) {
       return new BadRequestResponse('category is not supported')
     }
 
-    const productStrategy = ProductServices.CategoryRegistry[existedCategory.CategoryCode]
-    const response: TProductStategyResponse = await productStrategy.Create(productInfo)
+    const validProductAttributes = []
+    const productAttributesHash = new Map()
+    const requiredAttributes = existedCategory.RequiredAttributes
+    const optionalAttributes = existedCategory.OptionalAttributes
 
-    if (response.success && response.product) {
-      const inventory = await InventoryModel.create({
-        InvenProduct: response.product._id,
-        InvenSeller: response.product.Seller,
-        InvenStock: productInfo.ProductQuantity
-      })
+    productAttributes.forEach((productAttribute) => {
+      productAttributesHash.set(productAttribute.productAttributeId, productAttribute.value)
+    })
 
-      return new OkResponse({
-        newProduct: response.product,
-        inventory: inventory
-      })
-    } else {
-      return new BadRequestResponse(response.message)
+    /**
+     * @description kiểm tra xem có đủ required attributes không ?
+     */
+    for (let index = 0; index < requiredAttributes.length; index++) {
+      const requiredAttribute = requiredAttributes[index]
+      if (productAttributesHash.has(requiredAttribute)) {
+        validProductAttributes.push({
+          Attribute: requiredAttribute,
+          Value: productAttributesHash.get(requiredAttribute)
+        })
+      } else {
+        return new BadRequestResponse('missing required attributes')
+      }
     }
+
+    /**
+     * @description kiểm tra xem có nằm trong optional attributes không ?
+     */
+    for (let index = 0; index < optionalAttributes.length; index++) {
+      const optionalAttribute = optionalAttributes[index]
+      if (productAttributesHash.has(optionalAttribute)) {
+        validProductAttributes.push({
+          Attribute: optionalAttribute,
+          Value: productAttributesHash.get(optionalAttribute)
+        })
+      }
+    }
+
+    const newProduct = await ProductModel.create({
+      ProductName: productName,
+      ProductThumb: productThumb,
+      ProductDescription: productDescription,
+      ProductQuantity: productQuantity,
+      ProductPrice: productPrice,
+      Seller: seller,
+      productCategory: productCategoryCode,
+      ProductAttributes: validProductAttributes
+    })
+
+    const inventory = await InventoryModel.create({
+      InvenProduct: newProduct._id,
+      InvenSeller: newProduct.Seller,
+      InvenStock: newProduct.ProductQuantity
+    })
+
+    return new OkResponse({
+      newProduct: newProduct,
+      inventory: inventory
+    })
   }
 
-  static Update = async function (input: TProductSchema) {
+  static Update = async function (input: any) {
     if (!input.ProductId) {
       return new BadRequestResponse("product's id is required")
     }
@@ -56,8 +97,7 @@ class ProductServices {
       return new BadRequestResponse('category is not supported')
     }
 
-    const productStrategy = ProductServices.CategoryRegistry[category]
-    const response = await productStrategy.Update(input)
+    // const response = await productStrategy.Update(input)
 
     if (response.success && response.product) {
       const inventory = await InventoryModel.create({
@@ -329,9 +369,5 @@ class ProductServices {
     })
   }
 }
-
-ProductServices.RegisterCategory('ca#001', new Electronics())
-ProductServices.RegisterCategory('ca#002', new Clothes())
-ProductServices.RegisterCategory('ca#003', new Furnitures())
 
 export default ProductServices

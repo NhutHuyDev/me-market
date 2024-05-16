@@ -2,6 +2,7 @@ import {
   TAddCategorySchema,
   TCategoryQuerySchema,
   TDeleteCategorySchema,
+  TGetDetailCategorySchema,
   TUpdateCategorySchema
 } from '@src/schema/category.request.schemas'
 import AttributeServices from '@src/services/attribute.services'
@@ -16,6 +17,16 @@ class CategoryControllers {
     const queries = req.query
 
     const response = await CategoryServices.Find(queries)
+    response.Send(res)
+  }
+
+  static GetDetailHandler = async function (
+    req: Request<TGetDetailCategorySchema, object, object>,
+    res: Response
+  ) {
+    const categoryId = req.params.categoryId
+
+    const response = await CategoryServices.GetDetail(categoryId)
     response.Send(res)
   }
 

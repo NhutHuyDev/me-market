@@ -64,7 +64,14 @@ export const CategoryQuerySchema = object({
   })
 })
 
+export const GetDetailCategorySchema = object({
+  params: object({
+    categoryId: string().refine((categoryId) => IsValidObjectId(categoryId))
+  })
+})
+
 export type TAddCategorySchema = TypeOf<typeof AddCategorySchema>['body']
 export type TUpdateCategorySchema = TypeOf<typeof UpdateCategorySchema>['body']
 export type TDeleteCategorySchema = TypeOf<typeof DeleteCategorySchema>['body']
 export type TCategoryQuerySchema = TypeOf<typeof CategoryQuerySchema>['query']
+export type TGetDetailCategorySchema = TypeOf<typeof GetDetailCategorySchema>['params']

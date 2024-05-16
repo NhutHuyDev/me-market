@@ -15,19 +15,10 @@ class ProductControllers {
     req: Request<object, object, TAddProductSchema>,
     res: Response
   ) {
-    const { productName, productDescription, productPrice, productQuantity, productCategoryCode } =
-      req.body
-
     const User = res.locals.user as TUser
 
-    const productInfo: Partial<TProduct> = {
-      ProductName: productName,
-      ProductDescription: productDescription,
-      ProductPrice: productPrice,
-      ProductQuantity: productQuantity,
-      ProductCategory: productCategoryCode,
-      Seller: User._id
-    }
+    const productInfo = req.body
+    productInfo.seller = String(User._id)
 
     const response = await ProductServices.Create(productInfo)
     response.Send(res)
