@@ -5,9 +5,9 @@ a simple eCommerce backend application
 ## Appendix
 ### List of APIs
 
-### **1. SHARED FEATURES**
+#### **1. Shared Features**
 
-### 1.1. Authentication & Authorization
+**1.1. Authentication & Authorization**
   
 ||Method|Resource|Description|
 |---|---|---|---|
@@ -18,11 +18,11 @@ a simple eCommerce backend application
 |1.1.5|POST|/access/sign-out|sign out|
 |1.1.6|POST|/access/refresh|refresh access token by using refresh token rotation technique|
 |1.1.7|POST|/credential/request-reset-password|request to get password reset code to reset user's password|
-|1.1.8|POST|/v1/api/credential/reset-password/:userId/:passwordResetCode|update new password|
+|1.1.8|POST|/credential/reset-password/:userId/:passwordResetCode|update new password|
 
 ### **2. BUYER FEATURES**
 
-### 2.1. Product
+#### 2.1. Product
 
 ||Method|Resource|Description|
 |---|---|---|---|
