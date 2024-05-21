@@ -5,9 +5,9 @@ a simple eCommerce backend application
 ## Appendix
 ### List of APIs
 
-#### **1. Shared Features**
+**1. Shared Features**
 
-**1.1. Authentication & Authorization**
+*1.1. Authentication & Authorization*
   
 ||Method|Resource|Description|
 |---|---|---|---|
@@ -20,16 +20,16 @@ a simple eCommerce backend application
 |1.1.7|POST|/credential/request-reset-password|request to get password reset code to reset user's password|
 |1.1.8|POST|/credential/reset-password/:userId/:passwordResetCode|update new password|
 
-### **2. BUYER FEATURES**
+**2. Buyer Features**
 
-#### 2.1. Product
+*2.1. Product*
 
 ||Method|Resource|Description|
 |---|---|---|---|
 |2.1.1|GET|/products|filter, sort, and full-text search products|
 |2.1.2|GET|/products/:productSlug/:productId|get detail information of a product|
 
-### 2.2. Cart
+*2.2. Cart*
 
 ||Method|Resource|Description|
 |---|---|---|---|
@@ -38,21 +38,22 @@ a simple eCommerce backend application
 |2.2.3|PATCH|/carts|update quantity of a product in cart|
 |2.2.4|DELETE|/carts|remove products from cart|
 
-### 2.3. Order
+*2.3. Order*
+
 ||Method|Resource|Description|
 |---|---|---|---|
 |2.3.1|POST|/orders/preview|preview an order's information before ordering|
 |2.3.2|POST|/orders/|place an order|
 
-### **3. SELLER FEATURES**
+**3. Seller Features**
 
-### 3.1. Seller
+*3.1. Seller*
 
 ||Method|Resource|Description|
 |---|---|---|---|
 |3.1.1|POST|/sellers/register|register for selling|
 
-### 3.2. Product
+*3.2. Product*
 
 ||Method|Resource|Description|
 |---|---|---|---|
@@ -66,7 +67,7 @@ a simple eCommerce backend application
 |3.2.8|PATCH|/products/unpublish|unpublish a product|
 |3.2.9|DELETE|/products/:productId|delete a product|
 
-### 3.3. Discount
+*3.3. Discount*
 
 ||Method|Resource|Description|
 |---|---|---|---|
@@ -76,9 +77,9 @@ a simple eCommerce backend application
 |3.3.4|PATCH|/discounts/enable|set active for a discount|
 |3.3.5|PATCH|/discounts/disable|set in-active for a discount|
 
-### **4. SUPER ADMIN FEATURES**
+**4. Super Admin Features**
 
-### 4.1. Product Attribute
+*4.1. Product Attribute*
 
 ||Method|Resource|Description|
 |---|---|---|---|
@@ -88,7 +89,7 @@ a simple eCommerce backend application
 |4.1.4|PATCH|/product-attributes|update a product attribute|
 |4.1.5|DELETE|/product-attributes|delete a product attribute|
 
-### 4.2. Product Category
+*4.2. Product Category*
 
 ||Method|Resource|Description|
 |---|---|---|---|
