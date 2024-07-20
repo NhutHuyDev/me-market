@@ -28,13 +28,12 @@ class ProductControllers {
     req: Request<object, object, TUpdateProductSchema>,
     res: Response
   ) {
-    const input = req.body
-
     const User = res.locals.user
 
-    input.Seller = User._id
+    const productInfo = req.body
+    productInfo.seller = String(User._id)
 
-    const response = await ProductServices.Update(input)
+    const response = await ProductServices.Update(productInfo)
     response.Send(res)
   }
 

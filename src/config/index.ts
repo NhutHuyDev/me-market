@@ -21,6 +21,13 @@ const dev = {
     clientId: process.env.GOOGLE_MAILER_CLIENT_ID,
     clientSecret: process.env.GOOGLE_MAILER_CLIENT_SECRET,
     refreshToken: process.env.GOOGLE_MAILER_REFRESH_TOKEN
+  },
+  super_admin: {
+    email: process.env.SUPER_ADMIN_EMAIL,
+    firstName: process.env.SUPER_ADMIN_FIRST_NAME,
+    lastName: process.env.SUPER_ADMIN_LAST_NAME,
+    mobilePhone: process.env.SUPER_ADMIN_MOBILE_PHONE,
+    credPassword: process.env.SUPER_ADMIN_CRED_PASSWORD
   }
 }
 
@@ -42,6 +49,13 @@ const pro = {
     clientId: process.env.GOOGLE_MAILER_CLIENT_ID,
     clientSecret: process.env.GOOGLE_MAILER_CLIENT_SECRET,
     refreshToken: process.env.GOOGLE_MAILER_REFRESH_TOKEN
+  },
+  super_admin: {
+    email: process.env.SUPER_ADMIN_EMAIL,
+    firstName: process.env.SUPER_ADMIN_FIRST_NAME,
+    lastName: process.env.SUPER_ADMIN_LAST_NAME,
+    mobilePhone: process.env.SUPER_ADMIN_MOBILE_PHONE,
+    credPassword: process.env.SUPER_ADMIN_CRED_PASSWORD
   }
 }
 

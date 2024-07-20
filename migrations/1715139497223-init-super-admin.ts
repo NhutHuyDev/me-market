@@ -10,10 +10,10 @@ export async function up(): Promise<void> {
   await mongoDBConnector(config.db.mongo.connection_str)
 
   const newUser = await UserModel.create({
-    Email: 'memarket.admin@gmail.com',
-    FirstName: 'MeMarket',
-    LastName: 'Super Admin',
-    MobilePhone: '0982121022',
+    Email: config.super_admin.email,
+    FirstName: config.super_admin.firstName,
+    LastName: config.super_admin.lastName,
+    MobilePhone: config.super_admin.mobilePhone,
     Roles: [ESystemRoles.SuperAdmin]
   })
 
@@ -21,8 +21,8 @@ export async function up(): Promise<void> {
 
   await CredentialModel.create({
     User: newUser._id,
-    CredLogin: 'memarket.admin@gmail.com',
-    CredPassword: 'admin@2024'
+    CredLogin: config.super_admin.email,
+    CredPassword: config.super_admin.credPassword
   })
 }
 
@@ -30,7 +30,7 @@ export async function down(): Promise<void> {
   await mongoDBConnector(config.db.mongo.connection_str)
 
   const deletedUser = await UserModel.findOneAndDelete({
-    Email: 'memarket.admin@gmail.com'
+    Email: config.super_admin.email
   })
 
   await KeyStoreModel.findOneAndDelete({
@@ -40,5 +40,4 @@ export async function down(): Promise<void> {
   await CredentialModel.findOneAndDelete({
     User: deletedUser?._id
   })
-
 }

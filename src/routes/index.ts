@@ -40,7 +40,7 @@ router.use('/v1/api/carts', CartRoutes)
 /**
  * @description seller features
  */
-router.use('/v1/api/seller', SellerRoutes)
+router.use('/v1/api/sellers', SellerRoutes)
 router.use('/v1/api/products', ProductRoutes)
 router.use('/v1/api/discounts', DiscountRoutes)
 

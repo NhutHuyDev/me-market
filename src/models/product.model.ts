@@ -10,12 +10,25 @@ export type TProduct = {
   ProductPrice: number
   ProductQuantity: number
   Seller: Schema.Types.ObjectId
-  ProductCategory: string
+  ProductCategory: Schema.Types.ObjectId
   ProductAttributes: [{ AttributeTitle: string; Value: string }]
   ProductAvgRating: number
   IsDraft: boolean
   IsPublished: boolean
 }
+
+export type TProductAttributeValue = {
+  Attribute: Schema.Types.ObjectId
+  Value: string
+}
+
+const productAttributeValueSchema = new Schema<TProductAttributeValue>(
+  {
+    Attribute: { type: Schema.Types.ObjectId, ref: 'ProductAttributes', required: true },
+    Value: { type: String, required: true }
+  },
+  { _id: false }
+)
 
 const productSchema = new Schema<TProduct>(
   {
@@ -25,14 +38,9 @@ const productSchema = new Schema<TProduct>(
     ProductDescription: { type: String, required: true },
     ProductPrice: { type: Number, required: true },
     Seller: { type: Schema.Types.ObjectId, ref: 'Users', required: true },
-    ProductCategory: { type: String, ref: 'Categories', required: true },
+    ProductCategory: { type: Schema.Types.ObjectId, ref: 'Categories', required: true },
     ProductAttributes: {
-      type: [
-        {
-          Attribute: { type: Schema.Types.ObjectId, ref: 'ProductAttributes', required: true },
-          Value: { type: String, required: true }
-        }
-      ],
+      type: [productAttributeValueSchema],
       required: true
     },
     ProductAvgRating: { type: Number, default: 0, max: 5, min: 0 },

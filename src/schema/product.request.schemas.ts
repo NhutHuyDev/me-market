@@ -18,9 +18,9 @@ export const AddProductSchema = object({
       required_error: "product's price is required"
     }),
     seller: string().optional(),
-    productCategoryCode: string({
+    productCategory: string({
       required_error: "product's category is required"
-    }),
+    }).refine((productCategory) => IsValidObjectId(productCategory)),
     productAttributes: array(
       object({
         productAttributeId: string(),
@@ -36,25 +36,35 @@ export const AddProductSchema = object({
 
 export const UpdateProductSchema = object({
   body: object({
-    ProductId: string(),
-    ProductName: string({
+    productId: string(),
+    productName: string({
       required_error: "product's name is required"
     }),
-    ProductDescription: string({
+    productDescription: string({
       required_error: "product's description is required"
     }),
-    ProductQuantity: number({
+    productQuantity: number({
       invalid_type_error: "product's quantity is a integer",
       required_error: "product's quantity is required"
     }).min(1, "product's quantity has to be greater than 0"),
-    ProductPrice: number({
+    productPrice: number({
       required_error: "product's price is required"
     }),
-    ProductCategory: string({
+    seller: string().optional(),
+    productCategory: string({
       required_error: "product's category is required"
     }),
-    ProductAttributes: any()
-  }).refine((data) => IsValidObjectId(data.ProductId), {
+    productAttributes: array(
+      object({
+        productAttributeId: string(),
+        value: string()
+      })
+    ).refine((productAttributes) =>
+      productAttributes.every((productAttribute) =>
+        IsValidObjectId(productAttribute.productAttributeId)
+      )
+    )
+  }).refine((data) => IsValidObjectId(data.productId), {
     message: "product's id is not valid"
   })
 })

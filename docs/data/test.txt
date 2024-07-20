@@ -1,0 +1,202 @@
+/* ==================================================================================================================================================== */
+/* ROLES */
+
+[
+    {
+        "attributeTitle": "Model",
+        "attributeDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Ut enim ad minim veniam"
+    },
+    {
+        "attributeTitle": "Size",
+        "attributeDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Ut enim ad minim veniam"
+    },
+    {
+        "attributeTitle": "Color",
+        "attributeDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Ut enim ad minim veniam"
+    },
+    {
+        "attributeTitle": "Manufacturer",
+        "attributeDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Ut enim ad minim veniam"
+    },
+    {
+        "attributeTitle": "Material",
+        "attributeDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Ut enim ad minim veniam"
+    },
+    {
+        "attributeTitle": "Brand",
+        "attributeDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Ut enim ad minim veniam"
+    }
+]
+
+/* ==================================================================================================================================================== */
+/* USERS */
+[
+    {
+        "email": "nnh241202@gmail.com",
+        "mobilePhone": "0366588225", 
+        "firstName": "Nguyen",
+        "lastName": "Huy", 
+        "credPassword" : "Nnh@036659",
+        "passwordConfirmation" : "Nnh@036659"
+    },
+    {
+        "email": "nguyenhuy7402@gmail.com",
+        "mobilePhone": "0935588771", 
+        "firstName": "Stuff",
+        "lastName": "Store", 
+        "credPassword" : "Stuff-store@2024",
+        "passwordConfirmation" : "Stuff-store@2024"
+    }
+]
+
+
+/* ==================================================================================================================================================== */
+/* CATEGORIES */
+
+[
+    {
+        "categoryCode": "ca#001",
+        "categoryTitle": "Clothes",
+        "requiredAttributes": [
+            "664cb58f11a30c0e51659e31",
+            "664362f3eeea3b181a6e78af",
+            "664cb4ce11a30c0e51659e23"
+        ],
+        "optionalAttributes": [
+            "664cb4b111a30c0e51659e19"
+        ]
+    },
+    {
+        "categoryCode": "ca#002",
+        "categoryTitle": "Furniture",
+        "requiredAttributes": [
+            "664cb58f11a30c0e51659e31",
+            "6643627eeeea3b181a6e78a2",
+            "664cb4b111a30c0e51659e19"
+        ],
+        "optionalAttributes": [
+            "664cb4c611a30c0e51659e1f"
+        ]
+    },
+    {
+        "categoryCode": "ca#003",
+        "categoryTitle": "Electronics",
+        "requiredAttributes": [
+            "664cb58f11a30c0e51659e31",
+            "664cb4c611a30c0e51659e1f",
+            "6643627eeeea3b181a6e78a2"
+        ],
+        "optionalAttributes": [
+            "664cb4ce11a30c0e51659e23"
+        ]
+    }
+]
+
+/* ==================================================================================================================================================== */
+/* PRODUCTS */
+
+[
+    {
+        "productName": "Áo thun LV mẫu mới giảm giá sốc",
+        "productDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+        "productPrice": 1500,
+        "productQuantity": 100,
+        "productCategory": "clothes",
+        "productAttributes": [
+            {
+                "productAttributeId": "664cb58f11a30c0e51659e31",
+                "value": "LV"
+            },
+            {
+                "productAttributeId": "664362f3eeea3b181a6e78af",
+                "value": "M"
+            },
+            {
+                "productAttributeId": "664cb4ce11a30c0e51659e23",
+                "value": "Cotton"
+            }
+        ]
+    },
+    {
+        "productName": "Tủ đồ IKEA giảm giá sốc",
+        "productDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+        "productPrice": 1250,
+        "productQuantity": 50,
+        "productCategory": "664cc306dd75b80f2e01b632",
+        "productAttributes": [
+            {
+                "productAttributeId": "664cb58f11a30c0e51659e31",
+                "value": "IKEA"
+            },
+            {
+                "productAttributeId": "6643627eeeea3b181a6e78a2",
+                "value": "IKEA-43"
+            },
+            {
+                "productAttributeId": "664cb4b111a30c0e51659e19",
+                "value": "Black"
+            }
+        ]
+    },
+    {
+        "productName": "Đèn pin nhập khẩu Nhật Bản",
+        "productDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+        "productPrice": 1500,
+        "productQuantity": 150,
+        "productCategory": "664cbb5cb2bb9adcb571b3ff",
+        "productAttributes": [
+            {
+                "productAttributeId": "664cb4c611a30c0e51659e1f",
+                "value": "JPan Kioto Factory"
+            },
+            {
+                "productAttributeId": "6643627eeeea3b181a6e78a2",
+                "value": "JP-C19"
+            },
+            {
+                "productAttributeId": "664cb58f11a30c0e51659e31",
+                "value": "JPan"
+            },
+            {
+                "productAttributeId": "664362f3eeea3b181a6e78af",
+                "value": "L"
+            }
+        ]
+    },
+    {
+        "productName": "Quần áo Nike chính hãng",
+        "productDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat",
+        "productPrice": 850,
+        "productQuantity": 200,
+        "productCategory": "664cbb25b2bb9adcb571b3eb",
+        "productAttributes": [
+            {
+                "productAttributeId": "664cb58f11a30c0e51659e31",
+                "value": "Nike"
+            },
+            {
+                "productAttributeId": "664362f3eeea3b181a6e78af",
+                "value": "L"
+            },
+            {
+                "productAttributeId": "664cb4ce11a30c0e51659e23",
+                "value": "Cotton"
+            }
+        ]
+    }
+]   
+
+/* ==================================================================================================================================================== */
+/* ROLES */
+
+[
+    {
+        "RoleTitle": "Super Admin"
+    },
+    {
+        "RoleTitle": "Seller"
+    },
+    {
+        "RoleTitle": "Buyer"
+    }
+]

@@ -1,7 +1,11 @@
 import CategoryModel from '@src/models/category.model'
 import { BadRequestResponse, UnauthorizedResponse } from '@src/core/error.responses'
-import { TAddProductSchema, TProductQuerySchema } from '@src/schema/product.request.schemas'
-import ProductModel, { TProduct } from '@src/models/product.model'
+import {
+  TAddProductSchema,
+  TUpdateProductSchema,
+  TProductQuerySchema
+} from '@src/schema/product.request.schemas'
+import ProductModel from '@src/models/product.model'
 import { OkResponse } from '@src/core/success.responses'
 import InventoryModel from '@src/models/inventory.model'
 
@@ -13,14 +17,12 @@ class ProductServices {
       productThumb,
       productQuantity,
       productPrice,
-      productCategoryCode,
+      productCategory,
       productAttributes,
       seller
     } = productInfo
 
-    const existedCategory = await CategoryModel.findOne({
-      CategoryCode: productCategoryCode
-    })
+    const existedCategory = await CategoryModel.findById(productCategory)
 
     if (!existedCategory) {
       return new BadRequestResponse('category is not supported')
@@ -39,14 +41,14 @@ class ProductServices {
      * @description kiểm tra xem có đủ required attributes không ?
      */
     for (let index = 0; index < requiredAttributes.length; index++) {
-      const requiredAttribute = requiredAttributes[index]
+      const requiredAttribute = String(requiredAttributes[index])
       if (productAttributesHash.has(requiredAttribute)) {
         validProductAttributes.push({
           Attribute: requiredAttribute,
           Value: productAttributesHash.get(requiredAttribute)
         })
       } else {
-        return new BadRequestResponse('missing required attributes')
+        return new BadRequestResponse('missing required attributes - ' + String(requiredAttribute))
       }
     }
 
@@ -54,7 +56,7 @@ class ProductServices {
      * @description kiểm tra xem có nằm trong optional attributes không ?
      */
     for (let index = 0; index < optionalAttributes.length; index++) {
-      const optionalAttribute = optionalAttributes[index]
+      const optionalAttribute = String(optionalAttributes[index])
       if (productAttributesHash.has(optionalAttribute)) {
         validProductAttributes.push({
           Attribute: optionalAttribute,
@@ -70,14 +72,14 @@ class ProductServices {
       ProductQuantity: productQuantity,
       ProductPrice: productPrice,
       Seller: seller,
-      productCategory: productCategoryCode,
+      ProductCategory: productCategory,
       ProductAttributes: validProductAttributes
     })
 
     const inventory = await InventoryModel.create({
       InvenProduct: newProduct._id,
-      InvenSeller: newProduct.Seller,
-      InvenStock: newProduct.ProductQuantity
+      Seller: seller,
+      InvenStock: productQuantity
     })
 
     return new OkResponse({
@@ -86,33 +88,100 @@ class ProductServices {
     })
   }
 
-  static Update = async function (input: any) {
-    if (!input.ProductId) {
+  static Update = async function (productInfo: TUpdateProductSchema) {
+    const {
+      productId,
+      productName,
+      productDescription,
+      productQuantity,
+      productPrice,
+      productCategory,
+      productAttributes,
+      seller
+    } = productInfo
+
+    if (!productId) {
       return new BadRequestResponse("product's id is required")
     }
 
-    const category = String(input.ProductCategory)
-    const existedCategory = await CategoryModel.findById(category)
+    const currentProduct = await ProductModel.findById(productId)
+
+    if (!currentProduct) {
+      return new BadRequestResponse('product is not existed')
+    }
+
+    if (String(currentProduct.Seller) !== seller) {
+      return new UnauthorizedResponse('cannot update the product')
+    }
+
+    const existedCategory = await CategoryModel.findById(productCategory)
     if (!existedCategory) {
       return new BadRequestResponse('category is not supported')
     }
 
     // const response = await productStrategy.Update(input)
 
-    if (response.success && response.product) {
-      const inventory = await InventoryModel.create({
-        InvenProduct: response.product._id,
-        InvenSeller: response.product.Seller,
-        InvenStock: input.ProductQuantity
-      })
+    const validProductAttributes = []
+    const productAttributesHash = new Map()
+    const requiredAttributes = existedCategory.RequiredAttributes
+    const optionalAttributes = existedCategory.OptionalAttributes
 
-      return new OkResponse({
-        newProduct: response.product,
-        inventory: inventory
-      })
-    } else {
-      return new BadRequestResponse(response.message)
+    productAttributes.forEach((productAttribute) => {
+      productAttributesHash.set(productAttribute.productAttributeId, productAttribute.value)
+    })
+
+    /**
+     * @description kiểm tra xem có đủ required attributes không ?
+     */
+    for (let index = 0; index < requiredAttributes.length; index++) {
+      const requiredAttribute = String(requiredAttributes[index])
+      if (productAttributesHash.has(requiredAttribute)) {
+        validProductAttributes.push({
+          Attribute: requiredAttribute,
+          Value: productAttributesHash.get(requiredAttribute)
+        })
+      } else {
+        return new BadRequestResponse('missing required attributes - ' + String(requiredAttribute))
+      }
     }
+
+    /**
+     * @description kiểm tra xem có nằm trong optional attributes không ?
+     */
+    for (let index = 0; index < optionalAttributes.length; index++) {
+      const optionalAttribute = String(optionalAttributes[index])
+      if (productAttributesHash.has(optionalAttribute)) {
+        validProductAttributes.push({
+          Attribute: optionalAttribute,
+          Value: productAttributesHash.get(optionalAttribute)
+        })
+      }
+    }
+
+    const newProduct = await ProductModel.findByIdAndUpdate(productId, {
+      ProductName: productName,
+      ProductDescription: productDescription,
+      ProductQuantity: productQuantity,
+      ProductPrice: productPrice,
+      Seller: seller,
+      ProductCategory: productCategory,
+      ProductAttributes: validProductAttributes
+    })
+
+    const inventory = await InventoryModel.findOne(
+      {
+        InvenProduct: productId,
+        Seller: seller
+      },
+      {
+        InvenStock: productQuantity
+      }
+    )
+
+    return new OkResponse({
+      updatedProduct: newProduct,
+      inventory: inventory
+    })
   }
 
   static PublishProduct = async function (productId: string, userId: string) {

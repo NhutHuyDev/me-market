@@ -4,7 +4,6 @@ import DiscountModel, { DiscountAppliedType, DiscountType } from '@src/models/di
 import { TDiscountQuerySchema, TDiscountSchema } from '@src/schema/discount.request.schemas'
 import ProductServices from './product.services'
 import ProductModel from '@src/models/product.model'
-import { InternalServerError } from '@src/core/exceptions'
 import DiscountRepo from '@src/models/repositories/discount.repo'
 
 class DiscountServices {
