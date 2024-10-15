@@ -19,7 +19,7 @@
   },
   "author": "nguyenhuydev",
   "license": "ISC",
-  "dependencies": {
+  "dependencies": { 
     "@types/nodemailer": "^6.4.14",
     "argon2": "^0.40.1",
     "compression": "^1.7.4",

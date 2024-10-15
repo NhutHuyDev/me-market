@@ -1,5 +1,5 @@
 import DEFAULT_CONFIG from './default'
-import dotenv from 'dotenv'
+import * as dotenv from 'dotenv'
 
 dotenv.config()
 
