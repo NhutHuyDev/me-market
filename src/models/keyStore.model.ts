@@ -2,13 +2,13 @@ import { model, Schema } from 'mongoose'
 
 export type TKeyStore = {
   _id: Schema.Types.ObjectId
-  User: Schema.Types.ObjectId
+  AuthCredential: Schema.Types.ObjectId
   PublicKey: string
   PrivateKey: string
 }
 
 const keyStoreSchema = new Schema<TKeyStore>({
-  User: { type: Schema.Types.ObjectId, ref: 'Users' },
+  AuthCredential: { type: Schema.Types.ObjectId, ref: 'Credentials' },
   PublicKey: { type: String, required: true },
   PrivateKey: { type: String, required: true }
 })

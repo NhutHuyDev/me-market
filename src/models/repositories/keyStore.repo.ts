@@ -3,22 +3,22 @@ import KeyStoreModel from '../keyStore.model'
 import { GenerateRSAKeyPair } from '@src/helpers/rsa'
 
 class KeyStoreRepo {
-  static Create = async function (userId: string) {
+  static Create = async function (authId: string) {
     const { PublicKey, PrivateKey } = GenerateRSAKeyPair()
 
     const publicKeyEncoding = Buffer.from(PublicKey).toString('base64')
     const privateKeyEncoding = Buffer.from(PrivateKey).toString('base64')
 
     return KeyStoreModel.create({
-      User: userId,
+      AuthCredential: authId,
       PublicKey: publicKeyEncoding,
       PrivateKey: privateKeyEncoding
     })
   }
 
-  static GetKeyPairByUserId = async function (userId: string) {
+  static GetKeyPairByUserId = async function (authId: string) {
     const keyPair = await KeyStoreModel.findOne({
-      User: new mongoose.Types.ObjectId(userId)
+      AuthCredential: new mongoose.Types.ObjectId(authId)
     })
 
     const { PublicKey, PrivateKey } = keyPair ? keyPair.toJSON() : { PublicKey: '', PrivateKey: '' }

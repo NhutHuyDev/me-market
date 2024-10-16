@@ -1,12 +1,12 @@
 import { STATUS_CODE, DEFAULT_STATUS_MESSAGE } from '@src/utils/httpStatusRespones'
-import { ErrorResponse, ErrorStatus } from './response'
+import { ErrorResponse } from './response'
 
 /**
  * @description Bad request response
  */
 export class BadRequestResponse extends ErrorResponse {
   constructor(message = DEFAULT_STATUS_MESSAGE.BAD_REQUEST) {
-    super(message, STATUS_CODE.BAD_REQUEST, ErrorStatus.Error)
+    super(message, STATUS_CODE.BAD_REQUEST)
   }
 }
 
@@ -15,7 +15,7 @@ export class BadRequestResponse extends ErrorResponse {
  */
 export class ConflictResponse extends ErrorResponse {
   constructor(message = DEFAULT_STATUS_MESSAGE.CONFLICT) {
-    super(message, STATUS_CODE.CONFLICT, ErrorStatus.Error)
+    super(message, STATUS_CODE.CONFLICT)
   }
 }
 
@@ -25,10 +25,8 @@ export class ConflictResponse extends ErrorResponse {
 export class UnauthorizedResponse extends ErrorResponse {
   constructor(
     message = DEFAULT_STATUS_MESSAGE.UNAUTHORIZED,
-    statusCode = STATUS_CODE.UNAUTHORIZED,
-    status = ErrorStatus.Error
   ) {
-    super(message, statusCode, status)
+    super(message, STATUS_CODE.UNAUTHORIZED)
   }
 }
 
@@ -38,10 +36,8 @@ export class UnauthorizedResponse extends ErrorResponse {
 export class ForbiddenResponse extends ErrorResponse {
   constructor(
     message = DEFAULT_STATUS_MESSAGE.FORBIDDEN,
-    statusCode = STATUS_CODE.FORBIDDEN,
-    status = ErrorStatus.Error
   ) {
-    super(message, statusCode, status)
+    super(message, STATUS_CODE.FORBIDDEN)
   }
 }
 
@@ -52,10 +48,9 @@ export class ForbiddenResponse extends ErrorResponse {
 export class NotFoundResponse extends ErrorResponse {
   constructor(
     message = DEFAULT_STATUS_MESSAGE.NOT_FOUND,
-    statusCode = STATUS_CODE.NOT_FOUND,
-    status = ErrorStatus.Error
+    code = STATUS_CODE.NOT_FOUND,
   ) {
-    super(message, statusCode, status)
+    super(message, code)
   }
 }
 
@@ -65,9 +60,8 @@ export class NotFoundResponse extends ErrorResponse {
 export class InternalServerResponse extends ErrorResponse {
   constructor(
     message = DEFAULT_STATUS_MESSAGE.INTERNAL_SERVER_ERROR,
-    statusCode = STATUS_CODE.INTERNAL_SERVER_ERROR,
-    status = ErrorStatus.Fail
+    code = STATUS_CODE.INTERNAL_SERVER_ERROR,
   ) {
-    super(message, statusCode, status)
+    super(message, code)
   }
 }

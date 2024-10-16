@@ -28,7 +28,8 @@ class OtpKeyRepo {
     const validEmail = await OtpKeyModel.findOne({
       VerifyType: EVerifyType.Email,
       VerifyInfo: email,
-      IsVerified: true
+      IsVerified: true,
+      ExpiredAt: { $ne: null, $gt: new Date() }
     })
 
     return validEmail ? true : false

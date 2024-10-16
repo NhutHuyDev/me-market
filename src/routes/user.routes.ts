@@ -23,7 +23,7 @@ router.post(
 )
 
 router.post(
-  '/create',
+  '/',
   ValidateResource(CreateUserSchema),
   HandleException(UserControllers.CreateUserHandler)
 )

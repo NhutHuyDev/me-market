@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { VerifyJwt } from '@src/helpers/jwt'
 import customHttpHeaders from '@src/utils/customHttpHeaders'
 import KeyStoreRepo from '@src/models/repositories/keyStore.repo'
-import { IUser } from '@src/models/user.model'
+import { TUser } from '@src/models/user.model'
 import { IsValidObjectId } from '@src/utils/mongo.utils'
 
 const DeserializeUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -18,7 +18,7 @@ const DeserializeUser = async (req: Request, res: Response, next: NextFunction) 
 
   const verifyingKey = keyPair.PublicKeyDecoding
 
-  const decoded = VerifyJwt(accessToken, verifyingKey) as IUser
+  const decoded = VerifyJwt(accessToken, verifyingKey) as TUser
 
   if (decoded) {
     res.locals.user = decoded

@@ -11,7 +11,7 @@ export type TCategory = {
 const categorySchema = new Schema<TCategory>({
   CategoryCode: {
     type: String,
-    unique: true, 
+    unique: true,
     required: true
   },
   CategoryTitle: {

@@ -18,7 +18,7 @@ import DeserializeUser from '../middlewares/deserializeUser'
 
 const router = express.Router()
 
-router.get('/v1/api/health-check', (_, res) => {
+router.get('/api/v1/health-check', (_, res) => {
   return res.sendStatus(200)
 })
 
@@ -28,27 +28,27 @@ router.use(handleException(DeserializeUser))
  * @description auth features
  */
 
-router.use('/v1/api/users', UserRoutes)
-router.use('/v1/api/access', AccessRoutes)
-router.use('/v1/api/credential', CredentialRoutes)
+router.use('/api/v1/users', UserRoutes)
+router.use('/api/v1/access', AccessRoutes)
+router.use('/api/v1/credential', CredentialRoutes)
 
 /**
  * @description cart & order features
  */
-router.use('/v1/api/carts', CartRoutes)
+router.use('/api/v1/carts', CartRoutes)
 
 /**
  * @description seller features
  */
-router.use('/v1/api/sellers', SellerRoutes)
-router.use('/v1/api/products', ProductRoutes)
-router.use('/v1/api/discounts', DiscountRoutes)
+router.use('/api/v1/sellers', SellerRoutes)
+router.use('/api/v1/products', ProductRoutes)
+router.use('/api/v1/discounts', DiscountRoutes)
 
 /**
  * @description super admin features
  */
-router.use('/v1/api/product-attributes', ProductAttributeRoutes)
-router.use('/v1/api/categories', CategoryRoutes)
+router.use('/api/v1/product-attributes', ProductAttributeRoutes)
+router.use('/api/v1/categories', CategoryRoutes)
 
 /**
  * @description 404 handling
@@ -67,8 +67,6 @@ router.use((error: any, req: Request, res: Response, next: NextFunction) => {
   const status = error.code >= 400 && error.code < 500 ? 'error' : 'fail'
   const code = error.code >= 400 && error.code < 500 ? error.code : 500
   return res.status(code).json({
-    code: code,
-    status: status,
     message: error.message || 'Internal server error'
   })
 })

@@ -23,6 +23,7 @@ class UserControllers {
     const candidateOtp = req.body.otp
 
     const response = await UserServices.VerifyEmail(email, candidateOtp)
+
     response.Send(res)
   }
 

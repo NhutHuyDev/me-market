@@ -11,6 +11,8 @@ import { CreatedResponse, OkResponse } from '@src/core/success.responses'
 import CartModel from '@src/models/cart.model'
 import { EVerifyType } from '@src/models/otpKey.model'
 import OtpKeyRepo from '@src/models/repositories/registerOtp.repo'
+import mongoose from 'mongoose'
+import { InternalServerError } from '@src/core/exceptions'
 
 class UserServices {
   static RequestVerifyEmail = async function (email: string) {
@@ -110,36 +112,51 @@ class UserServices {
       return new BadRequestResponse('email is already in use. Please use another email!')
     }
 
-    /**
-     * @description 3. tạo thông tin ban đầu cho user
-     */
-    const newUser = await UserModel.create({
-      Email: input.email,
-      FirstName: input.firstName,
-      LastName: input.lastName,
-      MobilePhone: input.mobilePhone
-    })
+    const session = await mongoose.startSession();
 
-    /**
-     * @description 4. tạo key store
-     */
-    await KeyStoreRepo.Create(String(newUser._id))
+    session.startTransaction();
 
-    /**
-     * @description 5. tạo thông tin đăng nhập
-     */
-    await CredentialModel.create({
-      User: newUser._id,
-      CredLogin: input.email,
-      CredPassword: input.credPassword
-    })
+    try {
+      /**
+       * @description 3. tạo thông tin ban đầu cho user
+       */
+      const newUser = await UserModel.create({
+        Email: input.email,
+        FirstName: input.firstName,
+        LastName: input.lastName,
+        MobilePhone: input.mobilePhone
+      })
 
-    /**
-     * @description 6. tạo thông tin giỏ hàng
-     */
-    await CartModel.create({
-      Buyer: newUser._id
-    })
+      /**
+       * @description 4. tạo thông tin đăng nhập
+       */
+      const authCredential = await CredentialModel.create({
+        User: newUser._id,
+        CredLogin: input.email,
+        CredPassword: input.credPassword
+      })
+
+      /**
+       * @description 5. tạo key store
+       */
+      await KeyStoreRepo.Create(String(authCredential._id))
+
+      throw new InternalServerError()
+
+      /**
+       * @description 6. tạo thông tin giỏ hàng
+       */
+      await CartModel.create({
+        Buyer: newUser._id
+      })
+
+      await session.commitTransaction();
+
+    } catch (error) {
+      await session.abortTransaction();
+    } finally {
+      session.endSession(); 
+    }
 
     return new CreatedResponse({
       email: input.email,

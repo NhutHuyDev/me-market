@@ -6,12 +6,12 @@ import { Response } from 'express'
 
 export class ApiResponse {
   code: number
-  constructor(statusCode: number) {
-    this.code = statusCode
+  constructor(code: number) {
+    this.code = code
   }
 
   Send(res: Response) {
-    return res.status(this.code).json(this)
+    throw new Error("Method 'Send()' must be implemented.")
   }
 }
 
@@ -20,16 +20,14 @@ export class ApiResponse {
  */
 
 export class SuccessResponse extends ApiResponse {
-  status: string
   data: any
-  constructor(statusCode: number, metadata: any) {
-    super(statusCode)
-    this.status = 'sucess'
+  constructor(code: number, metadata: any) {
+    super(code)
     this.data = metadata
   }
 
   Send(res: Response) {
-    return res.status(this.code).json(this)
+    return res.status(this.code).json(this.data)
   }
 }
 
@@ -37,21 +35,16 @@ export class SuccessResponse extends ApiResponse {
  * @description Error Response
  */
 
-export enum ErrorStatus {
-  Error = 'error',
-  Fail = 'fail'
-}
-
 export class ErrorResponse extends ApiResponse {
   message: string
-  status: string
-  constructor(message: string, statusCode: number, status: string) {
-    super(statusCode)
+  constructor(message: string, code: number) {
+    super(code)
     this.message = message
-    this.status = status
   }
 
   Send(res: Response) {
-    return res.status(this.code).json(this)
+    return res.status(this.code).json({
+        message: this.message
+      })
   }
 }
