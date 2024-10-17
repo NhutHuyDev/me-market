@@ -152,5 +152,7 @@ make dev
     ```
     authorization: bearer <"JWT token">
     ```
+
+- Can use [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension to test these APIs with the given '/client' folder
 ## References
 [1]. Tips Javascript. (2023b, February 14). Course: Node.js Backend Architecture. https://www.youtube.com/watch?v=5keK7PRH9pE&list=PLw0w5s5b9NK4ucXizOF-eKAXKvn9ruCw8
