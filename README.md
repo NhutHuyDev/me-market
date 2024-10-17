@@ -1,7 +1,9 @@
 ## MeMarket
 ## Summary
 This project is a simple eCommerce backend application that supports user authentication, product management, seller registration, and order processing.
-- RESTful APIs using JSON format, and request validation handled via [Express](https://expressjs.com/) with Typescript
+- RESTful APIs using JSON format via [Express](https://expressjs.com/) with Typescript
+
+- Request validation handled via [Zod](https://zod.dev/)
 
 - MongoDB, [mongoose ORM](https://mongoosejs.com/)
 
@@ -58,6 +60,9 @@ make server
 ```
 make dev
 ```
+
+## Database Diagram
+
 
 ## API Appendix
 
