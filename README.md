@@ -1,101 +1,156 @@
-# MeMarket
+## MeMarket
 ## Summary
-a simple eCommerce backend application
+This project is a simple eCommerce backend application that supports user authentication, product management, seller registration, and order processing.
+- RESTful APIs using JSON format, and request validation handled via [Express](https://expressjs.com/) with Typescript
 
-## Appendix
-### List of APIs
+- MongoDB, [mongoose ORM](https://mongoosejs.com/)
 
-**1. Shared Features**
+- Token-based authentication with JWT
 
-*1.1. Authentication & Authorization*
+## How to Run
+### Prerequisites
+- Node v20.12
+
+- ```Docker``` installed
+
+- Linux/MacOS, or Windows with WSL2, should have ```make``` installed
+
+### Launch Mongo container
+```
+make mongo
+```
+
+### Seed Roles and Admin
+```
+make seed 
+```
+
+### Compile Typescript into Javascript
+```
+make build
+```
+
+### Run the Server
+**.env**
+```
+DEV_PORT=<"app port">
+ACCESS_TOKEN_EXPIRATION=<"access token expiration duration">
+REFESH_TOKEN_EXPIRATION=<"refresh token expiration duration">
+MONGO_CONNECTION_STR=<"Mongo connection string">
+
+SUPER_ADMIN_EMAIL=<"admin's email">
+SUPER_ADMIN_FIRST_NAME=<"admin's first name">
+SUPER_ADMIN_LAST_NAME=<"admin's last name">
+SUPER_ADMIN_MOBILE_PHONE=<"admin's mobile phone">
+SUPER_ADMIN_CRED_PASSWORD=<"admin's password">
+
+ADMIN_EMAIL_ADDRESS=<"email address for mailing feature">
+GOOGLE_MAILER_CLIENT_ID=<"OAuth2 client ID">
+GOOGLE_MAILER_CLIENT_SECRET=<"OAuth2 client secret">
+GOOGLE_MAILER_REFRESH_TOKEN=<"OAuth2 client refresh token">
+```
+
+```
+make server
+```
+
+### Run the server directly with TypeScript (for development)
+```
+make dev
+```
+
+## API Appendix
+
+### Authentication & Authorization APIs
   
-||Method|Resource|Description|
+|Method|Endpoint|Description| Authentication |
 |---|---|---|---|
-|1.1.1|POST|/users/request-verify-email|request to get OTP to verify user's email|
-|1.1.2|POST|/users/verify-email|verify user's email by OTP|
-|1.1.3|POST|/users/create|sign up|
-|1.1.4|POST|/access/sign-in|sign in|
-|1.1.5|POST|/access/sign-out|sign out|
-|1.1.6|POST|/access/refresh|refresh access token by using refresh token rotation technique|
-|1.1.7|POST|/credential/request-reset-password|request to get password reset code to reset user's password|
-|1.1.8|POST|/credential/reset-password/:userId/:passwordResetCode|update new password|
+|POST|/users/request-verify-email|Request to get OTP to verify user's email| No |
+|POST|/users/verify-email|Verify user's email by OTP| No |
+|POST|/users|Sign up| No |
+|POST|/access/sign-in|Sign in| No |
+|POST|/access/sign-out|Sign out| Yes |
+|POST|/access/refresh|Refresh access token by using refresh token rotation technique| No |
+|POST|/credential/request-reset-password|Request to get password reset code to reset user's password| No |
+|POST|/credential/reset-password/:userId/:passwordResetCode|Update new password| Yes |
 
-**2. Buyer Features**
+### Seller APIs
 
-*2.1. Product*
-
-||Method|Resource|Description|
+|Method|Endpoint|Description| Authentication |
 |---|---|---|---|
-|2.1.1|GET|/products|filter, sort, and full-text search products|
-|2.1.2|GET|/products/:productSlug/:productId|get detail information of a product|
+|POST|/sellers/register|register for selling| Yes |
 
-*2.2. Cart*
+### Product APIs
 
-||Method|Resource|Description|
+|Method|Endpoint|Description| Authentication |
 |---|---|---|---|
-|2.2.1|GET|/carts|get the cart of the current buyer|
-|2.2.2|POST|/carts|add a product into cart|
-|2.2.3|PATCH|/carts|update quantity of a product in cart|
-|2.2.4|DELETE|/carts|remove products from cart|
+|GET|/products|Buyers filter, sort, and search products| No |
+|GET|/products/:productSlug/:productId|Buyer gets detail information of a specific product| No |
+|GET|/products/all|get all products of the seller| Yes |
+|GET|/products/draft|get products being drafted of the seller| Yes |
+|GET|/products/publish|get published products of the seller| Yes |
+|GET|/products/:productId|get detail information of a product| Yes |
+|POST|/products|create a new product| Yes |
+|PATCH|/products|update a product| Yes |
+|PATCH|/products/publish|publish a product| Yes |
+|PATCH|/products/unpublish|unpublish a product| Yes |
+|DELETE|/products/:productId|delete a product| Yes |
 
-*2.3. Order*
+### Discount APIs
 
-||Method|Resource|Description|
+|Method|Endpoint|Description| Authentication |
 |---|---|---|---|
-|2.3.1|POST|/orders/preview|preview an order's information before ordering|
-|2.3.2|POST|/orders/|place an order|
+|GET|/discounts|request to get OTP to verify user's email| Yes |
+|POST|/discounts|create a discount| Yes |
+|PATCH|/discounts|update a discount| Yes |
+|PATCH|/discounts/enable|set active for a discount| Yes |
+|PATCH|/discounts/disable|set in-active for a discount| Yes |
 
-**3. Seller Features**
+### Cart APIs
 
-*3.1. Seller*
-
-||Method|Resource|Description|
+|Method|Endpoint|Description| Authentication |
 |---|---|---|---|
-|3.1.1|POST|/sellers/register|register for selling|
+|GET|/carts|get the cart of the current buyer| Yes |
+|POST|/carts|add a product into cart| Yes |
+|PATCH|/carts|update quantity of a product in cart| Yes |
+|DELETE|/carts|remove products from cart| Yes |
 
-*3.2. Product*
+### Order APIs
 
-||Method|Resource|Description|
+|Method|Endpoint|Description| Authentication |
 |---|---|---|---|
-|3.2.1|GET|/products/all|get all products of the seller|
-|3.2.2|GET|/products/draft|get products being drafted of the seller|
-|3.2.3|GET|/products/publish|get published products of the seller|
-|3.2.4|GET|/products/:productId|get detail information of a product|
-|3.2.5|POST|/products|create a new product|
-|3.2.6|PATCH|/products|update a product|
-|3.2.7|PATCH|/products/publish|publish a product|
-|3.2.8|PATCH|/products/unpublish|unpublish a product|
-|3.2.9|DELETE|/products/:productId|delete a product|
+|POST|/orders/preview|preview an order's information before ordering| Yes |
+|POST|/orders/|place an order| Yes |
 
-*3.3. Discount*
 
-||Method|Resource|Description|
+### Product Attribute APIs
+
+|Method|Endpoint|Description| Authentication |
 |---|---|---|---|
-|3.3.1|GET|/discounts|request to get OTP to verify user's email|
-|3.3.2|POST|/discounts|create a discount|
-|3.3.3|PATCH|/discounts|update a discount|
-|3.3.4|PATCH|/discounts/enable|set active for a discount|
-|3.3.5|PATCH|/discounts/disable|set in-active for a discount|
+|GET|/product-attributes|filter, sort, and full-text search product attributes| Yes |
+|POST|/product-attributes|create a product attribute| Yes |
+|POST|/product-attributes|update a product attribute| Yes |
+|PATCH|/product-attributes|update a product attribute| Yes |
+|DELETE|/product-attributes|delete a product attribute| Yes |
 
-**4. Super Admin Features**
+### Product Category APIs
 
-*4.1. Product Attribute*
-
-||Method|Resource|Description|
+|Method|Endpoint|Description| Authentication |
 |---|---|---|---|
-|4.1.1|GET|/product-attributes|filter, sort, and full-text search product attributes|
-|4.1.2|POST|/product-attributes|create a product attribute|
-|4.1.3|POST|/product-attributes|update a product attribute|
-|4.1.4|PATCH|/product-attributes|update a product attribute|
-|4.1.5|DELETE|/product-attributes|delete a product attribute|
+|GET|/categories|filter, sort, and full-text search product categories| Yes |
+|GET|/categories/:categoryId|get detail information of a category| Yes |
+|POST|/categories|create a product category| Yes |
+|PATCH|/categories|update a product category| Yes |
+|DELETE|/categories|delete a product category| Yes |
 
-*4.2. Product Category*
+### Notes:
+- All responses are in JSON format as well.
 
-||Method|Resource|Description|
-|---|---|---|---|
-|4.2.1|GET|/categories|filter, sort, and full-text search product categories|
-|4.2.2|GET|/categories/:categoryId|get detail information of a category|
-|4.2.3|POST|/categories|create a product category|
-|4.2.4|PATCH|/categories|update a product category|
-|4.2.5|DELETE|/categories|delete a product category|
+- For endpoints marked with "Yes" in the Authentication column, a valid API key is required.
 
+- The API key is sent using the `Authorization` header, formatted as follows: 
+    ```
+    authorization: bearer <"JWT token">
+    ```
+## References
+[1]. Tips Javascript. (2023b, February 14). Course: Node.js Backend Architecture. https://www.youtube.com/watch?v=5keK7PRH9pE&list=PLw0w5s5b9NK4ucXizOF-eKAXKvn9ruCw8
