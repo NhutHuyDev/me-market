@@ -1,3 +1,0 @@
-### GET: /health-check
-GET http://localhost:8080/api/v1/health-check HTTP/1.1
-content-type: application/json
