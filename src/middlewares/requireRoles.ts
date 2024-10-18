@@ -1,18 +1,25 @@
 import { Request, Response, NextFunction } from 'express'
-import { IUser } from '@src/models/user.model'
+import { TUser } from '@src/models/user.model'
 import { ForbiddenResponse } from '@src/core/error.responses'
-import { SystemRoles } from '@src/models/role.model'
+import RoleModel, { ESystemRoles } from '@src/models/role.model'
 import { IsSub } from '@src/utils/collection.utils'
 
 const RequireRoles =
-  (roles: SystemRoles[]) => async (_: Request, res: Response, next: NextFunction) => {
-    const user = res.locals.user as IUser
+  (roles: ESystemRoles[]) => async (_: Request, res: Response, next: NextFunction) => {
+    const user = res.locals.user as TUser
 
-    if (!user || !IsSub(roles, user.Roles)) {
-      return new ForbiddenResponse().Send(res)
+    if (user) {
+      const userRoles = (await RoleModel.find({
+        _id: { $in: user.Roles }
+      })).map(role => role.RoleTitle)
+      if (!IsSub(roles, userRoles)) {
+        return new ForbiddenResponse().Send(res)
+      } else {
+        return next()
+      }
+    } else {
+      return next()
     }
-
-    return next()
   }
 
 export default RequireRoles

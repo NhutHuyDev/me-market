@@ -1,13 +1,15 @@
-import { BadRequestResponse, UnauthorizedResponse } from '@src/core/error.responses'
+import { BadRequestResponse, ForbiddenResponse, UnauthorizedResponse } from '@src/core/error.responses'
 import { InternalServerError, NotFoundError } from '@src/core/exceptions'
 import { OkResponse } from '@src/core/success.responses'
 import { VerifyJwt } from '@src/helpers/jwt'
+import CredentialModel from '@src/models/credential.model'
 import CredentialRepo from '@src/models/repositories/credential.repo'
 import KeyStoreRepo from '@src/models/repositories/keyStore.repo'
 import SessionRepo from '@src/models/repositories/session.repo'
 import SessionModel from '@src/models/session.model'
 import UserModel from '@src/models/user.model'
 import { IsValidObjectId } from '@src/utils/mongo.utils'
+import { string } from 'zod'
 
 class AccessServices {
   static SignIn = async function (credLogin: string, credPassword: string) {
@@ -44,7 +46,10 @@ class AccessServices {
      * @description 4. Load thông tin khóa public
      */
 
-    const keyPair = await KeyStoreRepo.GetKeyPairByUserId(String(currentUser?._id))
+    const keyPair = await KeyStoreRepo.GetKeyPairByAuthId(String(userCredential?._id))
+    if (!keyPair) {
+      throw new InternalServerError()
+    }
 
     const signingKey = keyPair.PrivateKeyDecoding
 
@@ -68,10 +73,20 @@ class AccessServices {
       return new BadRequestResponse('clientId is not valid')
     }
 
+    const currentAuth = await CredentialModel.findOne({
+      User: clientId
+    }) 
+    if (!currentAuth) {
+      return new ForbiddenResponse()
+    }
+
     /**
      * @description 1. lấy cặp khóa public và private từ clientId
      */
-    const keyPair = await KeyStoreRepo.GetKeyPairByUserId(clientId)
+    const keyPair = await KeyStoreRepo.GetKeyPairByAuthId(String(currentAuth._id))
+    if (!keyPair) {
+      return new ForbiddenResponse()
+    }
 
     const verifyingKey = keyPair.PublicKeyDecoding
 
@@ -98,14 +113,7 @@ class AccessServices {
     }
 
     /**
-     * @description 4. kiểm tra lần nữa current session có thuộc về clientId không
-     */
-    if (String(currentSession.User) !== clientId) {
-      return new UnauthorizedResponse(`clientId is not valid`)
-    }
-
-    /**
-     * @description 5. disable current session
+     * @description 4. disable current session
      */
     currentSession.Available = false
 
@@ -121,10 +129,20 @@ class AccessServices {
       return new BadRequestResponse('clientId is not valid')
     }
 
+    const currentAuth = await CredentialModel.findOne({
+      User: clientId
+    }) 
+    if (!currentAuth) {
+      return new ForbiddenResponse()
+    }
+
     /**
      * @description 1. lấy cặp khóa public và private từ clientId
      */
-    const keyPair = await KeyStoreRepo.GetKeyPairByUserId(clientId)
+    const keyPair = await KeyStoreRepo.GetKeyPairByAuthId(String(currentAuth._id))
+    if (!keyPair) {
+      return new ForbiddenResponse()
+    }
 
     const verifyingKey = keyPair.PublicKeyDecoding
     const signingKey = keyPair.PrivateKeyDecoding
@@ -155,16 +173,9 @@ class AccessServices {
       throw new UnauthorizedResponse(`refresh token isn't found`)
 
     /**
-     * @description 5. kiểm tra lần nữa current session có thuộc về clientId không
+     * @description 5. tạo access token mới, thực hiện refresh token rotation và gửi chúng đi
      */
-
-    if (String(currentSession.User) !== clientId)
-      throw new UnauthorizedResponse(`clientId isn't valid`)
-
-    /**
-     * @description 6. tạo access token mới, thực hiện refresh token rotation và gửi chúng đi
-     */
-    const user = await UserModel.findById(currentSession.User)
+    const user = await UserModel.findById(clientId)
 
     if (!user) throw new InternalServerError()
 

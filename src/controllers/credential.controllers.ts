@@ -12,7 +12,8 @@ class CredentialControllers {
     res: Response
   ) {
     const email = req.body.email
-    new OkResponse(await CredentialServices.RequestResetPassword(email)).Send(res)
+    const response = await CredentialServices.RequestResetPassword(email)
+    response.Send(res)
   }
 
   static ResetPasswordHandler = async function (
@@ -22,9 +23,8 @@ class CredentialControllers {
     const userId = req.params.userId
     const passwordResetCode = req.params.passwordResetCode
     const newPassword = req.body.newPassword
-    new OkResponse(
-      await CredentialServices.ResetPassword(userId, newPassword, passwordResetCode)
-    ).Send(res)
+    const response = await CredentialServices.ResetPassword(userId, newPassword, passwordResetCode)
+    response.Send(res)
   }
 }
 

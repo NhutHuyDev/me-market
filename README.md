@@ -77,13 +77,13 @@ make dev
 |POST|/access/sign-out|Sign out| Yes |
 |POST|/access/refresh|Refresh access token by using refresh token rotation technique| No |
 |POST|/credential/request-reset-password|Request to get password reset code to reset user's password| No |
-|POST|/credential/reset-password/:userId/:passwordResetCode|Update new password| Yes |
+|POST|/credential/reset-password/:userId/:passwordResetCode|Update new password| No |
 
 ### Seller APIs
 
 |Method|Endpoint|Description| Authentication |
 |---|---|---|---|
-|POST|/sellers/register|register for selling| Yes |
+|POST|/sellers/register|A user register to sell products| Yes |
 
 ### Product APIs
 
@@ -151,13 +151,9 @@ make dev
 ### Notes:
 - All responses are in JSON format as well.
 
-- For endpoints marked with "Yes" in the Authentication column, a valid API key is required.
-
-- The API key is sent using the `Authorization` header, formatted as follows: 
-    ```
-    authorization: bearer <"JWT token">
-    ```
+- For endpoints marked with "Yes" in the Authentication column, a valid token is required.
 
 - Can use [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension to test these APIs with the given '/client' folder
+
 ## References
 [1]. Tips Javascript. (2023b, February 14). Course: Node.js Backend Architecture. https://www.youtube.com/watch?v=5keK7PRH9pE&list=PLw0w5s5b9NK4ucXizOF-eKAXKvn9ruCw8

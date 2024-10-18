@@ -16,7 +16,11 @@ class KeyStoreRepo {
     }], { session })
   }
 
-  static GetKeyPairByUserId = async function (authId: string) {
+  static GetKeyPairByAuthId = async function (authId: string) {
+    if (!authId) {
+      return 
+    }
+
     const keyPair = await KeyStoreModel.findOne({
       AuthCredential: new mongoose.Types.ObjectId(authId)
     })

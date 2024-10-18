@@ -2,8 +2,10 @@ import { Request, Response, NextFunction } from 'express'
 import { VerifyJwt } from '@src/helpers/jwt'
 import customHttpHeaders from '@src/utils/customHttpHeaders'
 import KeyStoreRepo from '@src/models/repositories/keyStore.repo'
-import { TUser } from '@src/models/user.model'
+import UserModel, { TUser } from '@src/models/user.model'
 import { IsValidObjectId } from '@src/utils/mongo.utils'
+import UserRepo from '@src/models/repositories/user.repo'
+import CredentialModel from '@src/models/credential.model'
 
 const DeserializeUser = async (req: Request, res: Response, next: NextFunction) => {
   const accessToken = (req.headers.authorization || '').replace(/^Bearer\s/, '')
@@ -14,7 +16,17 @@ const DeserializeUser = async (req: Request, res: Response, next: NextFunction) 
     return next()
   }
 
-  const keyPair = await KeyStoreRepo.GetKeyPairByUserId(clientId)
+  const currentAuth = await CredentialModel.findOne({
+    User: clientId
+  })
+  if (!currentAuth) {
+    return next()
+  }
+
+  const keyPair = await KeyStoreRepo.GetKeyPairByAuthId(String(currentAuth._id))
+  if (!keyPair) {
+    return next()
+  }
 
   const verifyingKey = keyPair.PublicKeyDecoding
 

@@ -1,4 +1,3 @@
-import { OkResponse } from '@src/core/success.responses'
 import { TSignInSchema } from '@src/schema/access.request.schemas'
 import AccessServices from '@src/services/access.services'
 import customHttpHeaders from '@src/utils/customHttpHeaders'

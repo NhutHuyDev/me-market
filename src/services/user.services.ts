@@ -14,6 +14,7 @@ import OtpKeyRepo from '@src/models/repositories/registerOtp.repo'
 import mongoose from 'mongoose'
 import { InternalServerError } from '@src/core/exceptions'
 import { Console } from 'console'
+import RoleModel, { ESystemRoles } from '@src/models/role.model'
 
 class UserServices {
   static RequestVerifyEmail = async function (email: string) {
@@ -118,6 +119,13 @@ class UserServices {
     session.startTransaction();
 
     try {
+      const UserRole = await RoleModel.findOne({
+        RoleTitle: ESystemRoles.Buyer
+      })
+      if (!UserRole) {
+        throw new InternalServerError()
+      }
+
       /**
        * @description 3. tạo thông tin ban đầu cho user
        */
@@ -125,7 +133,8 @@ class UserServices {
         Email: input.email,
         FirstName: input.firstName,
         LastName: input.lastName,
-        MobilePhone: input.mobilePhone
+        MobilePhone: input.mobilePhone,
+        Roles: [UserRole._id]
       }], { session })
 
       /**
