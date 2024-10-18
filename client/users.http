@@ -12,7 +12,7 @@ content-type: application/json
 
 {
     "email": "nguyenhuy7402@gmail.com",
-    "otp": "373089"
+    "otp": "974458"
 }
 
 ### POST: /users/

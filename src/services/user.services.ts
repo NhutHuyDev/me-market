@@ -13,6 +13,7 @@ import { EVerifyType } from '@src/models/otpKey.model'
 import OtpKeyRepo from '@src/models/repositories/registerOtp.repo'
 import mongoose from 'mongoose'
 import { InternalServerError } from '@src/core/exceptions'
+import { Console } from 'console'
 
 class UserServices {
   static RequestVerifyEmail = async function (email: string) {
@@ -120,42 +121,41 @@ class UserServices {
       /**
        * @description 3. tạo thông tin ban đầu cho user
        */
-      const newUser = await UserModel.create({
+      const newUser = await UserModel.create([{
         Email: input.email,
         FirstName: input.firstName,
         LastName: input.lastName,
         MobilePhone: input.mobilePhone
-      })
+      }], { session })
 
       /**
        * @description 4. tạo thông tin đăng nhập
        */
-      const authCredential = await CredentialModel.create({
-        User: newUser._id,
+      const authCredential = await CredentialModel.create([{
+        User: newUser[0]._id,
         CredLogin: input.email,
         CredPassword: input.credPassword
-      })
+      }], { session })
 
       /**
        * @description 5. tạo key store
        */
-      await KeyStoreRepo.Create(String(authCredential._id))
-
-      throw new InternalServerError()
+      await KeyStoreRepo.Create(String(authCredential[0]._id), session)
 
       /**
        * @description 6. tạo thông tin giỏ hàng
        */
-      await CartModel.create({
-        Buyer: newUser._id
-      })
+      await CartModel.create([{
+        Buyer: newUser[0]._id
+      }], { session })
 
       await session.commitTransaction();
 
     } catch (error) {
+      console.log(error)
       await session.abortTransaction();
     } finally {
-      session.endSession(); 
+      session.endSession();
     }
 
     return new CreatedResponse({

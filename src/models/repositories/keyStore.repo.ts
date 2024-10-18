@@ -3,17 +3,17 @@ import KeyStoreModel from '../keyStore.model'
 import { GenerateRSAKeyPair } from '@src/helpers/rsa'
 
 class KeyStoreRepo {
-  static Create = async function (authId: string) {
+  static Create = async function (authId: string, session: mongoose.mongo.ClientSession) {
     const { PublicKey, PrivateKey } = GenerateRSAKeyPair()
 
     const publicKeyEncoding = Buffer.from(PublicKey).toString('base64')
     const privateKeyEncoding = Buffer.from(PrivateKey).toString('base64')
 
-    return KeyStoreModel.create({
+    return KeyStoreModel.create([{
       AuthCredential: authId,
       PublicKey: publicKeyEncoding,
       PrivateKey: privateKeyEncoding
-    })
+    }], { session })
   }
 
   static GetKeyPairByUserId = async function (authId: string) {

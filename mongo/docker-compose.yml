@@ -1,0 +1,41 @@
+services:
+  mongo-primary-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mongo-primary
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    ports:
+      - 27017:27017
+    command: --replSet rs0 --keyFile /etc/mongo-keyfile --bind_ip_all --port 27017
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongo-primary-service:27017',priority:1}]},{force:true}) }" | mongosh --port 27017 -u root -p secret --authenticationDatabase admin
+      # test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongo-primary-service:27017',priority:2}, {_id:1,host:'mongo-secondary-service:27017',priority:1}]},{force:true}) }" | mongosh --port 27017 -u root -p secret --authenticationDatabase admin
+      interval: 15s
+      timeout: 15s
+      start_period: 15s
+      retries: 10
+    volumes:
+      - primary-data:/data/db
+
+  # mongo-secondary-service:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: mongo-secondary
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: secret
+  #   ports:
+  #     - 27018:27017
+    # command: --replSet rs0 --keyFile /etc/mongo-keyfile --bind_ip_all 
+    # volumes:
+    #   - secondary-data:/data/db
+
+volumes:
+  primary-data:
+    name: memarket-mongo-primary
+  # secondary-data: 
+  #   name: memarket-mongo-secondary
